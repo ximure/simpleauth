@@ -1,0 +1,17 @@
+name: SimpleAuth
+version: ${project.version}
+main: org.ximure.simpleauth.SimpleAuth
+api-version: 1.17
+author: ximure
+description: None yet
+website: None
+commands:
+  login:
+    description: Command for login on a server
+    usage: /<command> your_password
+  register:
+    description: Command to register on a server
+    usage: /<command> your_password password_reminder
+  remindpassword:
+    description: Command to show your password reminder
+    usage: /<command>
