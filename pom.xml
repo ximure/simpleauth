@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.ximure</groupId>
-    <artifactId>SimpleAuth</artifactId>
+    <artifactId>SimpleAuth2</artifactId>
     <version>0.1</version>
     <packaging>jar</packaging>
 
-    <name>SimpleAuth</name>
+    <name>SimpleAuth2</name>
 
     <description>None yet</description>
     <properties>

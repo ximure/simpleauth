@@ -1,9 +1,9 @@
-package org.ximure.simpleauth;
+package org.ximure.simpleauth2;
 
 import java.sql.*;
 import java.util.UUID;
 
-import static org.ximure.simpleauth.SimpleAuth.PASSWORDS_DATABASE;
+import static org.ximure.simpleauth2.SimpleAuth2.PASSWORDS_DATABASE;
 
 public class SqlManager {
 

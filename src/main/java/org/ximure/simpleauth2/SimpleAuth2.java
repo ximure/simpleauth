@@ -1,16 +1,16 @@
-package org.ximure.simpleauth;
+package org.ximure.simpleauth2;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.ximure.simpleauth.commands.CommandLogin;
-import org.ximure.simpleauth.commands.CommandPasswordReminder;
-import org.ximure.simpleauth.commands.CommandRegister;
+import org.ximure.simpleauth2.commands.CommandLogin;
+import org.ximure.simpleauth2.commands.CommandPasswordReminder;
+import org.ximure.simpleauth2.commands.CommandRegister;
 
 import java.io.File;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-public final class SimpleAuth extends JavaPlugin {
+public final class SimpleAuth2 extends JavaPlugin {
     private final Logger logger = Bukkit.getLogger();
     private final SqlManager sqlManager = new SqlManager();
     public final static File PLUGIN_FOLDER = new File("./plugins/SimpleAuth2");
@@ -25,14 +25,14 @@ public final class SimpleAuth extends JavaPlugin {
         if (!PLUGIN_FOLDER.exists()) {
             if (!PLUGIN_FOLDER.mkdir()) {
                 logger.info(ANSI_RED + "[SimpleAuth2] Plugin folder cannot be created" + ANSI_RESET);
-                Bukkit.getPluginManager().disablePlugin(new SimpleAuth());
+                Bukkit.getPluginManager().disablePlugin(new SimpleAuth2());
                 // TODO: check if this^ works
             }
         }
         // checking if database exist and create it if not
         if (!PASSWORDS_DATABASE.exists()) {
             if (!sqlManager.createDatabase() && !sqlManager.createPasswordsTable()) {
-                Bukkit.getPluginManager().disablePlugin(new SimpleAuth());
+                Bukkit.getPluginManager().disablePlugin(new SimpleAuth2());
                 // TODO: check if this^ works also
             }
         }

@@ -1,6 +1,6 @@
-name: SimpleAuth
+name: SimpleAuth2
 version: ${project.version}
-main: org.ximure.simpleauth.SimpleAuth
+main: org.ximure.simpleauth2.SimpleAuth2
 api-version: 1.17
 author: ximure
 description: None yet

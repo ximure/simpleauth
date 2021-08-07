@@ -1,4 +1,4 @@
-package org.ximure.simpleauth;
+package org.ximure.simpleauth2;
 
 import org.bukkit.event.Listener;
 
