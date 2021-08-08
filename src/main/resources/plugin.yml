@@ -8,10 +8,16 @@ website: None
 commands:
   login:
     description: Command for login on a server
-    usage: /<command> your_password
+    usage: /<command> пароль
   register:
     description: Command to register on a server
-    usage: /<command> your_password password_reminder
+    usage: /<command> пароль подсказка_к_паролю
   remindpassword:
     description: Command to show your password reminder
     usage: /<command>
+  cpw:
+    description: Command to change your password
+    usage: /<command> старый_пароль новый_пароль
+  cpr:
+    description: fuck this
+    usage: /<command> test

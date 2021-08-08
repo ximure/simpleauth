@@ -2,40 +2,29 @@ package org.ximure.simpleauth2;
 
 import org.bukkit.GameMode;
 
-import java.util.UUID;
+import java.util.*;
 
 public class PlayerStatus {
-    private boolean loggedIn;
-    private UUID UUID;
-    private GameMode gameMode;
+    final Map<UUID, GameMode> gameModeStatus = new HashMap<>();
+    final List<UUID> loginStatus = new ArrayList<>();
 
-    public PlayerStatus(boolean loggedIn, java.util.UUID UUID, GameMode gameMode) {
-        this.loggedIn = loggedIn;
-        this.UUID = UUID;
-        this.gameMode = gameMode;
+    public void setOnline(UUID playerUUID) {
+        loginStatus.add(playerUUID);
     }
 
-    public boolean isLoggedIn() {
-        return loggedIn;
+    public void setOffline(UUID playerUUID) {
+        loginStatus.remove(playerUUID);
     }
 
-    public void setLoggedIn(boolean loggedIn) {
-        this.loggedIn = loggedIn;
+    public Boolean isOnline(UUID playerUUID) {
+        return loginStatus.contains(playerUUID);
     }
 
-    public java.util.UUID getUUID() {
-        return UUID;
+    public void storeGameMode(UUID playerUUID, GameMode gameMode) {
+        gameModeStatus.put(playerUUID, gameMode);
     }
 
-    public void setUUID(java.util.UUID UUID) {
-        this.UUID = UUID;
-    }
-
-    public GameMode getGameMode() {
-        return gameMode;
-    }
-
-    public void setGameMode(GameMode gameMode) {
-        this.gameMode = gameMode;
+    public GameMode getPreviousGamemode(UUID playerUUID) {
+        return gameModeStatus.get(playerUUID);
     }
 }

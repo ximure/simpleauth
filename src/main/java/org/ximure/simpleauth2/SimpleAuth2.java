@@ -2,9 +2,7 @@ package org.ximure.simpleauth2;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.ximure.simpleauth2.commands.CommandLogin;
-import org.ximure.simpleauth2.commands.CommandPasswordReminder;
-import org.ximure.simpleauth2.commands.CommandRegister;
+import org.ximure.simpleauth2.commands.*;
 
 import java.io.File;
 import java.util.Objects;
@@ -13,6 +11,7 @@ import java.util.logging.Logger;
 public final class SimpleAuth2 extends JavaPlugin {
     private final Logger logger = Bukkit.getLogger();
     private final SqlManager sqlManager = new SqlManager();
+    private final PlayerStatus playerStatus = new PlayerStatus();
     public final static File PLUGIN_FOLDER = new File("./plugins/SimpleAuth2");
     public final static File PASSWORDS_DATABASE = new File("./plugins/SimpleAuth2/passwords.db");
     public static final String ANSI_RED = "\u001B[31m";
@@ -31,16 +30,25 @@ public final class SimpleAuth2 extends JavaPlugin {
         }
         // checking if database exist and create it if not
         if (!PASSWORDS_DATABASE.exists()) {
-            if (!sqlManager.createDatabase() && !sqlManager.createPasswordsTable()) {
+            // TODO: ПРОВЕРИТЬ ЕСЛИ ВСЁ ПОЛОМАЕТСЯ НАХУЙ ЕСЛИ НЕ ЗАКРЫТЬ КОННЕКТ
+            if (!sqlManager.createDatabase()) {
+                logger.info(ANSI_RED + "[SimpleAuth2] Database cannot be created" + ANSI_RESET);
                 Bukkit.getPluginManager().disablePlugin(new SimpleAuth2());
                 // TODO: check if this^ works also
             }
+            if (!sqlManager.createPasswordsTable()) {
+                logger.info(ANSI_RED + "[SimpleAuth2] Passwords table cannot be created" + ANSI_RESET);
+                Bukkit.getPluginManager().disablePlugin(new SimpleAuth2());
+                // TODO: check if this^ works too
+            }
         }
         // registering event handler and commands
-        getServer().getPluginManager().registerEvents(new EventListener(), this);
-        Objects.requireNonNull(this.getCommand("login")).setExecutor(new CommandLogin());
-        Objects.requireNonNull(this.getCommand("register")).setExecutor(new CommandRegister());
-        Objects.requireNonNull(this.getCommand("remindpassword")).setExecutor(new CommandPasswordReminder());
+        getServer().getPluginManager().registerEvents(new EventListener(playerStatus, sqlManager), this);
+        Objects.requireNonNull(this.getCommand("login")).setExecutor(new CommandLogin(playerStatus, sqlManager));
+        Objects.requireNonNull(this.getCommand("register")).setExecutor(new CommandRegister(playerStatus, sqlManager));
+        Objects.requireNonNull(this.getCommand("remindpassword")).setExecutor(new CommandSendPasswordReminder(sqlManager));
+        Objects.requireNonNull(this.getCommand("cpw")).setExecutor(new CommandChangePassword(sqlManager));
+        Objects.requireNonNull(this.getCommand("cpr")).setExecutor(new CommandChangePasswordReminder(sqlManager));
         logger.info(ANSI_GREEN + "[SimpleAuth2] Plugin has been launched successfully" + ANSI_RESET);
     }
 

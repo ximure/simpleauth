@@ -22,25 +22,40 @@ public class SqlManager {
             preparedStatement.setString(1, formattedUUID);
             preparedStatement.setString(2, password);
             preparedStatement.setString(3, passwordReminder);
-            preparedStatement.executeUpdate();
+            preparedStatement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     /**
-     * This method allows connecting to database
-     * @return  Connection object
+     * This method allows changing password in the database
+     * @param playerUUID    UUID playerUUID to find in the database to change password associate with it
+     * @param newPassword   String newPassword oldPassword will be changed to this one
      */
-    private Connection connectToDatabase() {
-        final String url = "jdbc:sqlite:" + PASSWORDS_DATABASE;
-        Connection connection = null;
+    public void changePassword(UUID playerUUID, String newPassword) {
+        String formattedUUID = playerUUID.toString().replace("-", "");
         try {
-            connection = DriverManager.getConnection(url);
+            Connection connection = this.connectToDatabase();
+            String query = "UPDATE passwords SET password = '" + newPassword + "' WHERE uuid = '" + formattedUUID + "'";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return connection;
+    }
+
+    public void changePasswordReminder(UUID playerUUID, String newPasswordReminder) {
+        String formattedUUID = playerUUID.toString().replace("-", "");
+        try {
+            Connection connection = this.connectToDatabase();
+            String query = "UPDATE passwords SET password_reminder = '" + newPasswordReminder +
+                    "' WHERE uuid = '" + formattedUUID + "'";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -57,9 +72,8 @@ public class SqlManager {
             ResultSet resultSet = statement.executeQuery(query);
             return resultSet.getString("uuid").equals(formattedUUID);
         } catch (SQLException e) {
-            e.printStackTrace();
+            return false;
         }
-        return null;
     }
 
     /**
@@ -87,7 +101,7 @@ public class SqlManager {
      * @param password      String password which player entered in in-game chat
      * @return              Boolean true if password player entered is the same in the database, else - false
      */
-    public Boolean getPassword(UUID playerUUID, String password) {
+    public Boolean checkPassword(UUID playerUUID, String password) {
         final String formattedUUID = playerUUID.toString().replace("-", "");
         final String query = "SELECT password FROM passwords WHERE uuid LIKE '" + formattedUUID + "'";
         try {
@@ -96,9 +110,23 @@ public class SqlManager {
             ResultSet resultSet = statement.executeQuery(query);
             return resultSet.getString("password").equals(password);
         } catch (SQLException e) {
+            return false;
+        }
+    }
+
+    /**
+     * This method allows connecting to database
+     * @return  Connection object
+     */
+    private Connection connectToDatabase() {
+        final String url = "jdbc:sqlite:" + PASSWORDS_DATABASE;
+        Connection connection = null;
+        try {
+            connection = DriverManager.getConnection(url);
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return connection;
     }
 
     /**
@@ -111,9 +139,6 @@ public class SqlManager {
             Connection connection = DriverManager.getConnection(url);
             if (connection != null) {
                 return true;
-                //Log.info(ANSI_GREEN + "[SimpleAuth2] A database has been created. The driver name is " + metaData
-                // + ANSI_RESET);
-                // TODO: fix logging error
             }
         } catch (SQLException e) {
             e.printStackTrace();
