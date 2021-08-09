@@ -28,7 +28,7 @@ public final class SimpleAuth2 extends JavaPlugin {
                 // TODO: check if this^ works
             }
         }
-        // checking if database exist and create it if not
+        // checking if database and password table exist and create them if not
         if (!PASSWORDS_DATABASE.exists()) {
             // TODO: ПРОВЕРИТЬ ЕСЛИ ВСЁ ПОЛОМАЕТСЯ НАХУЙ ЕСЛИ НЕ ЗАКРЫТЬ КОННЕКТ
             if (!sqlManager.createDatabase()) {

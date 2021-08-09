@@ -48,8 +48,10 @@ public class CommandLogin implements CommandExecutor {
         String password = args[0];
         boolean validPassword = sqlManager.checkPassword(playerUUID, password);
         if (validPassword) {
-            GameMode previousGameMode = playerStatus.getPreviousGamemode(playerUUID);
+            GameMode previousGameMode = playerStatus.getGameMode(playerUUID);
+            // setting player status to online so the registration command don't add this user in the database again
             playerStatus.setOnline(playerUUID);
+            // restoring previous gamemode which has been written in onplayerjoin event
             player.setGameMode(previousGameMode);
             player.sendMessage("[Pure] Вы залогинились");
             return true;

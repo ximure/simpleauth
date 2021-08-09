@@ -10,6 +10,7 @@ import org.ximure.simpleauth2.SqlManager;
 import java.util.UUID;
 
 public class CommandChangePassword implements CommandExecutor {
+    // TODO: check why it doesn't change password in the database
     private final SqlManager sqlManager;
 
     public CommandChangePassword(SqlManager sqlManager) {
@@ -33,7 +34,8 @@ public class CommandChangePassword implements CommandExecutor {
         }
         boolean tooManyArgs = args.length > 2;
         if (tooManyArgs) {
-            player.sendMessage("[Pure] Вы ввели слишком много значений. Синтаксис команды: /cpw старый_пароль новый_пароль");
+            player.sendMessage("[Pure] Вы ввели слишком много значений." +
+                    " Синтаксис команды: /cpw старый_пароль новый_пароль");
             return true;
         }
         else {
@@ -41,6 +43,7 @@ public class CommandChangePassword implements CommandExecutor {
             Boolean validPassword = sqlManager.checkPassword(playerUUID, oldPassword);
             if (validPassword != null && validPassword) {
                 String newPassword = args[1];
+                // changing password in the database
                 sqlManager.changePassword(playerUUID, newPassword);
                 player.sendMessage("[Pure] Вы сменили пароль. Ваш новый пароль: " + newPassword);
                 return true;

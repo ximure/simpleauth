@@ -47,9 +47,14 @@ public class CommandRegister implements CommandExecutor {
         }
         boolean passwordAndReminderProvided = args.length == 2;
         if (passwordAndReminderProvided) {
-            GameMode previousGameMode = playerStatus.getPreviousGamemode(playerUUID);
-            sqlManager.setPassword(playerUUID, args[0], args[1]);
+            String password = args[0];
+            String passwordReminder = args[1];
+            GameMode previousGameMode = playerStatus.getGameMode(playerUUID);
+            // adding player's uuid, password and reminder to the database
+            sqlManager.setPassword(playerUUID, password, passwordReminder);
+            // setting player status to online so the registration command don't add this user in the database again
             playerStatus.setOnline(playerUUID);
+            // restoring previous gamemode which has been written in onplayerjoin event
             player.setGameMode(previousGameMode);
             player.sendMessage("[Pure] Вы зарегистрировались");
         }

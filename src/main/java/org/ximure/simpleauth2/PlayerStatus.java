@@ -20,11 +20,11 @@ public class PlayerStatus {
         return loginStatus.contains(playerUUID);
     }
 
-    public void storeGameMode(UUID playerUUID, GameMode gameMode) {
+    public void setGameMode(UUID playerUUID, GameMode gameMode) {
         gameModeStatus.put(playerUUID, gameMode);
     }
 
-    public GameMode getPreviousGamemode(UUID playerUUID) {
+    public GameMode getGameMode(UUID playerUUID) {
         return gameModeStatus.get(playerUUID);
     }
 }

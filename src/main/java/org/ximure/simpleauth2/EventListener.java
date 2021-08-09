@@ -10,6 +10,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import java.util.UUID;
 
 public class EventListener implements Listener {
+    // TODO: a lot of listeners to check if what player can do while logged in, registered etc
     private final PlayerStatus playerStatus;
     private final SqlManager sqlManager;
 
@@ -23,7 +24,9 @@ public class EventListener implements Listener {
         Player player = e.getPlayer();
         UUID playerUUID = player.getUniqueId();
         GameMode gameMode = player.getGameMode();
-        playerStatus.storeGameMode(playerUUID, gameMode);
+        // storing previous player gamemode to restore if after registration/login
+        playerStatus.setGameMode(playerUUID, gameMode);
+        // enabling spectator gamemode to use less event listeners
         player.setGameMode(GameMode.SPECTATOR);
         if (sqlManager.isRegistered(playerUUID)) {
             player.sendMessage("[Pure] Введите ваш пароль");

@@ -10,6 +10,8 @@ import org.ximure.simpleauth2.SqlManager;
 import java.util.UUID;
 
 public class CommandChangePasswordReminder implements CommandExecutor {
+    // TODO: write reminder change logic
+    // TODO: check why it doesn't change value in the database
     private final SqlManager sqlManager;
 
     public CommandChangePasswordReminder(SqlManager sqlManager) {

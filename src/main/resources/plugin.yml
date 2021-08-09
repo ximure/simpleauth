@@ -1,23 +1,22 @@
 name: SimpleAuth2
 version: ${project.version}
 main: org.ximure.simpleauth2.SimpleAuth2
-api-version: 1.17
+api-version: 1.16
 author: ximure
-description: None yet
-website: None
+description: Small authorization plugin using SQLite database
 commands:
   login:
-    description: Command for login on a server
+    description: Команда для входа на сервер
     usage: /<command> пароль
   register:
-    description: Command to register on a server
+    description: Команда для регистрации на сервере
     usage: /<command> пароль подсказка_к_паролю
   remindpassword:
-    description: Command to show your password reminder
+    description: Команда для вывода напоминания пароля
     usage: /<command>
   cpw:
-    description: Command to change your password
+    description: Команда для смены пароля
     usage: /<command> старый_пароль новый_пароль
   cpr:
-    description: fuck this
-    usage: /<command> test
+    description: Команда для смены напоминания пароля
+    usage: /<command> новое_напоминание
