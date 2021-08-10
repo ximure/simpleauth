@@ -6,18 +6,18 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.ximure.simpleauth2.PlayerStatus;
-import org.ximure.simpleauth2.SqlManager;
+import org.ximure.simpleauth2.StringUtils;
+import org.ximure.simpleauth2.auth.AuthManager;
 
 import java.util.UUID;
 
 public class CommandLogin implements CommandExecutor {
-    private final PlayerStatus playerStatus;
-    private final SqlManager sqlManager;
+    private final AuthManager authManager;
+    private final StringUtils stringUtils;
 
-    public CommandLogin(PlayerStatus playerStatus, SqlManager sqlManager) {
-        this.playerStatus = playerStatus;
-        this.sqlManager = sqlManager;
+    public CommandLogin(AuthManager authManager, StringUtils stringUtils) {
+        this.authManager = authManager;
+        this.stringUtils = stringUtils;
     }
 
     @Override
@@ -25,38 +25,44 @@ public class CommandLogin implements CommandExecutor {
         Player player = (Player) sender;
         UUID playerUUID = player.getUniqueId();
 
-        boolean loggedIn = playerStatus.isOnline(playerUUID);
+        boolean loggedIn = authManager.isOnline(playerUUID);
         if (loggedIn) {
-            player.sendMessage("[Pure] Вы уже залогинены");
+            String alreadyLoggedInMessage = stringUtils.getString("already_logged_in");
+            player.sendMessage(alreadyLoggedInMessage);
             return true;
         }
-        Boolean registered = sqlManager.isRegistered(playerUUID);
+        Boolean registered = authManager.isRegistered(playerUUID);
         if (registered == null || !registered) {
-            player.sendMessage("[Pure] Вы не зарегистрированы");
+            String notRegisteredMessage = stringUtils.getString("not_registered");
+            player.sendMessage(notRegisteredMessage);
             return true;
         }
         boolean tooManyStrings = args.length > 1;
         if (tooManyStrings) {
-            player.sendMessage("[Pure] Вы ввели слишком много значений");
+            String tooManyArgsMessage = stringUtils.getString("too_many_args");
+            player.sendMessage(tooManyArgsMessage);
             return true;
         }
         boolean passwordProvided = args.length == 1;
         if (!passwordProvided) {
-            player.sendMessage("[Pure] Вы не ввели пароль");
+            String passwordNotEnteredMessage = stringUtils.getString("password_not_provided");
+            player.sendMessage(passwordNotEnteredMessage);
             return true;
         }
         String password = args[0];
-        boolean validPassword = sqlManager.checkPassword(playerUUID, password);
+        boolean validPassword = authManager.checkPassword(playerUUID, password);
         if (validPassword) {
-            GameMode previousGameMode = playerStatus.getGameMode(playerUUID);
+            GameMode previousGameMode = authManager.restoreGameMode(playerUUID);
+            String successfulLoginMessage = stringUtils.getString("successfull_login");
             // setting player status to online so the registration command don't add this user in the database again
-            playerStatus.setOnline(playerUUID);
+            authManager.setOnline(playerUUID);
             // restoring previous gamemode which has been written in onplayerjoin event
             player.setGameMode(previousGameMode);
-            player.sendMessage("[Pure] Вы залогинились");
+            player.sendMessage(successfulLoginMessage);
             return true;
         } else {
-            player.sendMessage("[Pure] Неверный пароль");
+            String wrongPasswordMessage = stringUtils.getString("wrong_password");
+            player.sendMessage(wrongPasswordMessage);
         }
         return true;
     }

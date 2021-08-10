@@ -6,18 +6,18 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.ximure.simpleauth2.PlayerStatus;
-import org.ximure.simpleauth2.SqlManager;
+import org.ximure.simpleauth2.StringUtils;
+import org.ximure.simpleauth2.auth.AuthManager;
 
 import java.util.UUID;
 
 public class CommandRegister implements CommandExecutor {
-    private final PlayerStatus playerStatus;
-    private final SqlManager sqlManager;
+    private final AuthManager authManager;
+    private final StringUtils stringUtils;
 
-    public CommandRegister(PlayerStatus playerStatus, SqlManager sqlManager) {
-        this.playerStatus = playerStatus;
-        this.sqlManager = sqlManager;
+    public CommandRegister(AuthManager authManager, StringUtils stringUtils) {
+        this.authManager = authManager;
+        this.stringUtils = stringUtils;
     }
 
     @Override
@@ -25,41 +25,47 @@ public class CommandRegister implements CommandExecutor {
         Player player = (Player) sender;
         UUID playerUUID = player.getUniqueId();
 
-        Boolean registered = sqlManager.isRegistered(playerUUID);
+        Boolean registered = authManager.isRegistered(playerUUID);
         if (registered) {
-            player.sendMessage("[Pure] Вы уже зарегистрированы");
+            String alreadyRegisteredMessage = stringUtils.getString("already_registered");
+            player.sendMessage(alreadyRegisteredMessage);
             return true;
         }
-        Boolean loggedIn = playerStatus.isOnline(playerUUID);
+        Boolean loggedIn = authManager.isOnline(playerUUID);
         if (loggedIn) {
-            player.sendMessage("[Pure] Вы уже залогинены и зарегистрированы");
+            String alreadyLoggedInAndRegistered = stringUtils.getString("already_registered_logged_in");
+            player.sendMessage(alreadyLoggedInAndRegistered);
             return true;
         }
         boolean nothingProvided = args.length == 0;
         if (nothingProvided) {
-            player.sendMessage("[Pure] Вы не ввели пароль и подсказку к паролю");
+            String nothingProvidedMessage = stringUtils.getString("no_password_reminder");
+            player.sendMessage(nothingProvidedMessage);
             return true;
         }
         boolean reminderNotProvided = args.length == 1;
         if (reminderNotProvided) {
-            player.sendMessage("[Pure] Вы не ввели подсказку к паролю");
+            String reminderNotProvidedMessage = stringUtils.getString("no_reminder");
+            player.sendMessage(reminderNotProvidedMessage);
             return true;
         }
         boolean passwordAndReminderProvided = args.length == 2;
         if (passwordAndReminderProvided) {
             String password = args[0];
             String passwordReminder = args[1];
-            GameMode previousGameMode = playerStatus.getGameMode(playerUUID);
+            String successfullRegistrationMessage = stringUtils.getString("successfull_registration");
+            GameMode previousGameMode = authManager.restoreGameMode(playerUUID);
             // adding player's uuid, password and reminder to the database
-            sqlManager.setPassword(playerUUID, password, passwordReminder);
+            authManager.setPassword(playerUUID, password, passwordReminder);
             // setting player status to online so the registration command don't add this user in the database again
-            playerStatus.setOnline(playerUUID);
+            authManager.setOnline(playerUUID);
             // restoring previous gamemode which has been written in onplayerjoin event
             player.setGameMode(previousGameMode);
-            player.sendMessage("[Pure] Вы зарегистрировались");
+            player.sendMessage(successfullRegistrationMessage);
         }
         else {
-            player.sendMessage("[Pure] Вы ввели слишком много информации. Разделяйте пароль и подсказку к нему пробелом");
+            String tooManyArgs = stringUtils.getString("too_many_args");
+            player.sendMessage(tooManyArgs);
         }
         return true;
     }

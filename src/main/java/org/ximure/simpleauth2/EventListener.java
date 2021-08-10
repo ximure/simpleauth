@@ -6,32 +6,35 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.ximure.simpleauth2.auth.AuthManager;
 
 import java.util.UUID;
 
 public class EventListener implements Listener {
     // TODO: a lot of listeners to check if what player can do while logged in, registered etc
-    private final PlayerStatus playerStatus;
-    private final SqlManager sqlManager;
+    private final AuthManager authManager;
+    private final StringUtils stringUtils;
 
-    public EventListener(PlayerStatus playerStatus, SqlManager sqlManager) {
-        this.playerStatus = playerStatus;
-        this.sqlManager = sqlManager;
+    public EventListener(AuthManager authManager, StringUtils stringUtils) {
+        this.authManager = authManager;
+        this.stringUtils = stringUtils;
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
         UUID playerUUID = player.getUniqueId();
-        GameMode gameMode = player.getGameMode();
+        GameMode currentGameMode = player.getGameMode();
+        String loginMessage = stringUtils.getString("login_message");
+        String registerMessage = stringUtils.getString("register_message");
         // storing previous player gamemode to restore if after registration/login
-        playerStatus.setGameMode(playerUUID, gameMode);
+        authManager.saveGameMode(playerUUID, currentGameMode);
         // enabling spectator gamemode to use less event listeners
         player.setGameMode(GameMode.SPECTATOR);
-        if (sqlManager.isRegistered(playerUUID)) {
-            player.sendMessage("[Pure] Введите ваш пароль");
+        if (authManager.isRegistered(playerUUID)) {
+            player.sendMessage(loginMessage);
         } else {
-            player.sendMessage("[Pure] Зарегистрируйтесь с помощью /register пароль подсказка_к_паролю");
+            player.sendMessage(registerMessage);
         }
     }
 
@@ -39,6 +42,6 @@ public class EventListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent e) {
         Player player = e.getPlayer();
         UUID playerUUID = player.getUniqueId();
-        playerStatus.setOffline(playerUUID);
+        authManager.setOffline(playerUUID);
     }
 }

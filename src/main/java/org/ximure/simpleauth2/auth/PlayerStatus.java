@@ -1,4 +1,4 @@
-package org.ximure.simpleauth2;
+package org.ximure.simpleauth2.auth;
 
 import org.bukkit.GameMode;
 
@@ -20,11 +20,11 @@ public class PlayerStatus {
         return loginStatus.contains(playerUUID);
     }
 
-    public void setGameMode(UUID playerUUID, GameMode gameMode) {
+    public void saveGameMode(UUID playerUUID, GameMode gameMode) {
         gameModeStatus.put(playerUUID, gameMode);
     }
 
-    public GameMode getGameMode(UUID playerUUID) {
+    public GameMode restoreGameMode(UUID playerUUID) {
         return gameModeStatus.get(playerUUID);
     }
 }

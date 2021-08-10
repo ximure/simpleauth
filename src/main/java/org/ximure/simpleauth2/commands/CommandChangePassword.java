@@ -5,16 +5,18 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.ximure.simpleauth2.SqlManager;
+import org.ximure.simpleauth2.StringUtils;
+import org.ximure.simpleauth2.auth.AuthManager;
 
 import java.util.UUID;
 
 public class CommandChangePassword implements CommandExecutor {
-    // TODO: check why it doesn't change password in the database
-    private final SqlManager sqlManager;
+    private final AuthManager authManager;
+    private final StringUtils stringUtils;
 
-    public CommandChangePassword(SqlManager sqlManager) {
-        this.sqlManager = sqlManager;
+    public CommandChangePassword(AuthManager authManager, StringUtils stringUtils) {
+        this.authManager = authManager;
+        this.stringUtils = stringUtils;
     }
 
     @Override
@@ -24,31 +26,35 @@ public class CommandChangePassword implements CommandExecutor {
 
         boolean nothingProvided = args.length == 0;
         if (nothingProvided) {
-            player.sendMessage("[Pure] Вы не ввели старый и новый пароли");
+            String nothingProvidedMessage = stringUtils.getString("no_password_reminder");
+            player.sendMessage(nothingProvidedMessage);
             return true;
         }
         boolean newPasswordNotProvided = args.length == 1;
         if (newPasswordNotProvided) {
-            player.sendMessage("[Pure] Вы не ввели новый пароль");
+            String newPasswordNotProvidedMessage = stringUtils.getString("no_new_password");
+            player.sendMessage(newPasswordNotProvidedMessage);
             return true;
         }
         boolean tooManyArgs = args.length > 2;
         if (tooManyArgs) {
-            player.sendMessage("[Pure] Вы ввели слишком много значений." +
-                    " Синтаксис команды: /cpw старый_пароль новый_пароль");
+            String tooManyArgsMessage = stringUtils.getString("too_many_args");
+            player.sendMessage(tooManyArgsMessage);
             return true;
         }
         else {
             String oldPassword = args[0];
-            Boolean validPassword = sqlManager.checkPassword(playerUUID, oldPassword);
+            Boolean validPassword = authManager.checkPassword(playerUUID, oldPassword);
             if (validPassword != null && validPassword) {
                 String newPassword = args[1];
+                String successfullPasswordChange = stringUtils.getString("successfull_password_change");
                 // changing password in the database
-                sqlManager.changePassword(playerUUID, newPassword);
-                player.sendMessage("[Pure] Вы сменили пароль. Ваш новый пароль: " + newPassword);
+                authManager.changePassword(playerUUID, newPassword);
+                player.sendMessage(successfullPasswordChange);
                 return true;
             }
-            player.sendMessage("[Pure] Вы ввели неверный старый пароль");
+            String wrongOldPasswordMessage = stringUtils.getString("wrong_old_password");
+            player.sendMessage(wrongOldPasswordMessage);
         }
         return true;
     }

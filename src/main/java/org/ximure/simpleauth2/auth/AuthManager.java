@@ -1,11 +1,11 @@
-package org.ximure.simpleauth2;
+package org.ximure.simpleauth2.auth;
 
 import java.sql.*;
 import java.util.UUID;
 
 import static org.ximure.simpleauth2.SimpleAuth2.PASSWORDS_DATABASE;
 
-public class SqlManager {
+public class AuthManager extends PlayerStatus {
     private static Connection connection;
 
     /**
