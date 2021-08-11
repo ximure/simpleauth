@@ -17,8 +17,8 @@ public final class SimpleAuth extends JavaPlugin {
     public final String ANSI_RED = "\u001B[31m";
     public final String ANSI_RESET = "\u001B[0m";
     private final AuthManager authManager = new AuthManager();
-    private final MessagesUtils messagesUtils = new MessagesUtils();
     private final Logger logger = Bukkit.getLogger();
+    private final Utils utils = new Utils(logger);
 
     @Override
     public void onEnable() {
@@ -27,7 +27,7 @@ public final class SimpleAuth extends JavaPlugin {
             if (!PLUGIN_FOLDER.mkdir()) {
                 logger.info(ANSI_RED + "[SimpleAuth] Plugin folder cannot be created. Maybe something wrong " +
                         "with folder permissions?" + ANSI_RESET);
-                // TODO: plugin disabling
+                Bukkit.getPluginManager().disablePlugin(this);
             }
         }
         // if database does not exist - this block will create it
@@ -35,37 +35,38 @@ public final class SimpleAuth extends JavaPlugin {
             if (!authManager.createDatabase()) {
                 logger.info(ANSI_RED + "[SimpleAuth] Database cannot be created. Maybe something wrong with" +
                         "folder permissions?" + ANSI_RESET);
-                // TODO: plugin disabling
+                Bukkit.getPluginManager().disablePlugin(this);
             }
             if (!authManager.createPasswordsTable()) {
                 logger.info(ANSI_RED + "[SimpleAuth] Passwords table cannot be created" + ANSI_RESET);
-                // TODO: plugin disabling
+                Bukkit.getPluginManager().disablePlugin(this);
             }
         }
         // if messages template config does not exist - this block will create it
         if (!MESSAGES_YAML.exists()) {
-            if (!messagesUtils.createTemplate()) {
+            if (!utils.createTemplate()) {
                 logger.info(ANSI_RED + "[SimpleAuth] Messages config template cannot be created" + ANSI_RESET);
-                // TODO: plugin disabling
+                Bukkit.getPluginManager().disablePlugin(this);
             }
         }
         // registering event handler and commands
-        getServer().getPluginManager().registerEvents(new EventListener(authManager, messagesUtils), this);
+        getServer().getPluginManager().registerEvents(new EventListener(authManager, utils), this);
         Objects.requireNonNull(this.getCommand("login"))
-                .setExecutor(new CommandLogin(authManager, messagesUtils));
+                .setExecutor(new CommandLogin(authManager, utils));
         Objects.requireNonNull(this.getCommand("register"))
-                .setExecutor(new CommandRegister(authManager, messagesUtils));
+                .setExecutor(new CommandRegister(authManager, utils));
         Objects.requireNonNull(this.getCommand("remindpassword"))
-                .setExecutor(new CommandSendPasswordReminder(authManager, messagesUtils));
+                .setExecutor(new CommandSendPasswordReminder(authManager, utils));
         Objects.requireNonNull(this.getCommand("cpw"))
-                .setExecutor(new CommandChangePassword(authManager, messagesUtils));
+                .setExecutor(new CommandChangePassword(authManager, utils));
         Objects.requireNonNull(this.getCommand("cpr"))
-                .setExecutor(new CommandChangePasswordReminder(authManager, messagesUtils));
+                .setExecutor(new CommandChangePasswordReminder(authManager, utils));
         logger.info(ANSI_GREEN + "[SimpleAuth] Plugin has been launched successfully" + ANSI_RESET);
     }
 
     @Override
     public void onDisable() {
-        // TODO: make disable plugin logic
+        authManager.clearGameModes();
+        authManager.clearOnlineStatuses();
     }
 }

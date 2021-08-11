@@ -22,7 +22,8 @@ public class AuthManager extends PlayerStatus {
             preparedStatement.setString(1, formattedUUID);
             preparedStatement.setString(2, password);
             preparedStatement.setString(3, passwordReminder);
-            return preparedStatement.execute();
+            preparedStatement.execute();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -90,7 +91,6 @@ public class AuthManager extends PlayerStatus {
             ResultSet resultSet = statement.executeQuery(query);
             return resultSet.getString("uuid").equals(formattedUUID);
         } catch (SQLException e) {
-            e.printStackTrace();
             return false;
         }
     }
@@ -110,7 +110,6 @@ public class AuthManager extends PlayerStatus {
             ResultSet resultSet = statement.executeQuery(query);
             return resultSet.getString("password_reminder");
         } catch (SQLException e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -122,7 +121,7 @@ public class AuthManager extends PlayerStatus {
      * @return              true if password player entered is the same in the database, else - false. Null if password
      * does not exist
      */
-    public Boolean verifyPassword(UUID playerUUID, String password) {
+    public Boolean verifyPassword(UUID playerUUID, String password) throws NullPointerException {
         final String formattedUUID = playerUUID.toString().replace("-", "");
         final String query = "SELECT password FROM passwords WHERE uuid LIKE '" + formattedUUID + "'";
         try {

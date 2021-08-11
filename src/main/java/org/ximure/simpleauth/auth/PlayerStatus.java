@@ -50,4 +50,18 @@ public class PlayerStatus {
     public GameMode restoreGameMode(UUID playerUUID) {
         return gameModeStatus.get(playerUUID);
     }
+
+    /**
+     * clears list with saved gamemodes
+     */
+    public void clearGameModes() {
+        gameModeStatus.clear();
+    }
+
+    /**
+     * clears list with saves online statuses
+     */
+    public void clearOnlineStatuses() {
+        loginStatus.clear();
+    }
 }

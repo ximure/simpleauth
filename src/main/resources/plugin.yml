@@ -1,22 +1,25 @@
 name: SimpleAuth
 version: ${project.version}
 main: org.ximure.simpleauth.SimpleAuth
-api-version: 1.16+
+api-version: 1.16
 author: ximure
-description: Small authorization plugin using SQLite database
+website: https://github.com/ximure/simpleauth
+description: Small authorization plugin which uses SQLite database
 commands:
   login:
-    description: Команда для входа на сервер
-    usage: /<command> пароль
+    description: Command to log in on a server
+    usage: /<command> <password>
   register:
-    description: Команда для регистрации на сервере
-    usage: /<command> пароль подсказка_к_паролю
+    description: Command to register on a server
+    usage: /<command> <password> <password reminder>
   remindpassword:
-    description: Команда для вывода напоминания пароля
+    description: Command to remind password
     usage: /<command>
   cpw:
-    description: Команда для смены пароля
-    usage: /<command> старый_пароль новый_пароль
+    aliases: [changepassword]
+    description: Command to change password
+    usage: /<command> <old_password> <new_password>
   cpr:
-    description: Команда для смены напоминания пароля
-    usage: /<command> новое_напоминание
+    aliases: [changepasswordreminder]
+    description: Command to change password reminder
+    usage: /<command> <new password reminder>
