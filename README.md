@@ -1,6 +1,5 @@
 ## Simple Auth (Minecraft Plugin)
 Simple Auth is a free and open-source Minecraft plugin for Minecraft 1.16+ with important features only. Not compatible with Velocity or any other proxy.
-<<<<<<< HEAD
 Uses an SQLite database and compatabile with Spigot/Bukkit/Paper servers, others was not tested yet.
 =======
 <<<<<<< HEAD
