@@ -42,7 +42,6 @@ public class CommandChangePassword implements CommandExecutor {
         if (tooManyArgs) {
             String tooManyArgsMessage = utils.getString("too_many_args");
             player.sendMessage(tooManyArgsMessage);
-            return true;
         }
         else {
             String oldPassword = args[0];
@@ -67,5 +66,6 @@ public class CommandChangePassword implements CommandExecutor {
             player.sendMessage(wrongOldPasswordMessage);
             return true;
         }
+        return true;
     }
 }
