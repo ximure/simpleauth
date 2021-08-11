@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.ximure</groupId>
-    <artifactId>SimpleAuth2</artifactId>
+    <artifactId>SimpleAuth</artifactId>
     <version>0.1</version>
     <packaging>jar</packaging>
 
-    <name>SimpleAuth2</name>
+    <name>Simple Auth</name>
 
     <description>None yet</description>
     <properties>
@@ -76,12 +76,6 @@
             <groupId>com.googlecode.json-simple</groupId>
             <artifactId>json-simple</artifactId>
             <version>1.1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>RELEASE</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>

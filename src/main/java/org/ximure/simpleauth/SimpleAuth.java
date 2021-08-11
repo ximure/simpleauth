@@ -1,18 +1,18 @@
-package org.ximure.simpleauth2;
+package org.ximure.simpleauth;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.ximure.simpleauth2.auth.AuthManager;
-import org.ximure.simpleauth2.commands.*;
+import org.ximure.simpleauth.auth.AuthManager;
+import org.ximure.simpleauth.commands.*;
 
 import java.io.File;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-public final class SimpleAuth2 extends JavaPlugin {
-    public static final File PASSWORDS_DATABASE = new File("./plugins/SimpleAuth2/passwords.db");
-    public static final File PLUGIN_FOLDER = new File("./plugins/SimpleAuth2");
-    public static final File MESSAGES_YAML = new File("./plugins/SimpleAuth2/messages.yml");
+public final class SimpleAuth extends JavaPlugin {
+    public static final File PASSWORDS_DATABASE = new File("./plugins/SimpleAuth/passwords.db");
+    public static final File PLUGIN_FOLDER = new File("./plugins/SimpleAuth");
+    public static final File MESSAGES_YAML = new File("./plugins/SimpleAuth/messages.yml");
     public final String ANSI_GREEN = "\u001B[32m";
     public final String ANSI_RED = "\u001B[31m";
     public final String ANSI_RESET = "\u001B[0m";
@@ -25,27 +25,27 @@ public final class SimpleAuth2 extends JavaPlugin {
         // if plugin folder does not exist - this block will create it
         if (!PLUGIN_FOLDER.exists()) {
             if (!PLUGIN_FOLDER.mkdir()) {
-                logger.info(ANSI_RED + "[SimpleAuth2] Plugin folder cannot be created. Maybe something wrong " +
+                logger.info(ANSI_RED + "[SimpleAuth] Plugin folder cannot be created. Maybe something wrong " +
                         "with folder permissions?" + ANSI_RESET);
                 // TODO: plugin disabling
             }
         }
         // if database does not exist - this block will create it
         if (!PASSWORDS_DATABASE.exists()) {
-            if (!authManager.sqlCreateDatabase()) {
-                logger.info(ANSI_RED + "[SimpleAuth2] Database cannot be created. Maybe something wrong with" +
+            if (!authManager.createDatabase()) {
+                logger.info(ANSI_RED + "[SimpleAuth] Database cannot be created. Maybe something wrong with" +
                         "folder permissions?" + ANSI_RESET);
                 // TODO: plugin disabling
             }
-            if (!authManager.sqlCreatePasswordsTable()) {
-                logger.info(ANSI_RED + "[SimpleAuth2] Passwords table cannot be created" + ANSI_RESET);
+            if (!authManager.createPasswordsTable()) {
+                logger.info(ANSI_RED + "[SimpleAuth] Passwords table cannot be created" + ANSI_RESET);
                 // TODO: plugin disabling
             }
         }
         // if messages template config does not exist - this block will create it
         if (!MESSAGES_YAML.exists()) {
             if (!messagesUtils.createTemplate()) {
-                logger.info(ANSI_RED + "[SimpleAuth2] Messages config template cannot be created" + ANSI_RESET);
+                logger.info(ANSI_RED + "[SimpleAuth] Messages config template cannot be created" + ANSI_RESET);
                 // TODO: plugin disabling
             }
         }
@@ -61,7 +61,7 @@ public final class SimpleAuth2 extends JavaPlugin {
                 .setExecutor(new CommandChangePassword(authManager, messagesUtils));
         Objects.requireNonNull(this.getCommand("cpr"))
                 .setExecutor(new CommandChangePasswordReminder(authManager, messagesUtils));
-        logger.info(ANSI_GREEN + "[SimpleAuth2] Plugin has been launched successfully" + ANSI_RESET);
+        logger.info(ANSI_GREEN + "[SimpleAuth] Plugin has been launched successfully" + ANSI_RESET);
     }
 
     @Override

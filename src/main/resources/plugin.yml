@@ -1,7 +1,7 @@
-name: SimpleAuth2
+name: SimpleAuth
 version: ${project.version}
-main: org.ximure.simpleauth2.SimpleAuth2
-api-version: 1.16
+main: org.ximure.simpleauth.SimpleAuth
+api-version: 1.16+
 author: ximure
 description: Small authorization plugin using SQLite database
 commands:

@@ -1,4 +1,4 @@
-package org.ximure.simpleauth2.auth;
+package org.ximure.simpleauth.auth;
 
 import org.bukkit.GameMode;
 

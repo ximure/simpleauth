@@ -1,12 +1,12 @@
-package org.ximure.simpleauth2.commands;
+package org.ximure.simpleauth.commands;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.ximure.simpleauth2.MessagesUtils;
-import org.ximure.simpleauth2.auth.AuthManager;
+import org.ximure.simpleauth.MessagesUtils;
+import org.ximure.simpleauth.auth.AuthManager;
 
 import java.util.UUID;
 
@@ -44,10 +44,10 @@ public class CommandChangePassword implements CommandExecutor {
         }
         else {
             String oldPassword = args[0];
-            Boolean validPassword = authManager.sqlVerifyPassword(playerUUID, oldPassword);
+            Boolean validPassword = authManager.verifyPassword(playerUUID, oldPassword);
             if (validPassword != null && validPassword) {
                 String newPassword = args[1];
-                if (!authManager.sqlChangePassword(playerUUID, newPassword)) {
+                if (!authManager.changePassword(playerUUID, newPassword)) {
                     String notSuccessfullPasswordChange = messagesUtils.getString("not_successfull_cpw");
                     player.sendMessage(notSuccessfullPasswordChange);
                     return false;

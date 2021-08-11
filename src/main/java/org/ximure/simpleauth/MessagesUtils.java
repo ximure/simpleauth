@@ -1,4 +1,4 @@
-package org.ximure.simpleauth2;
+package org.ximure.simpleauth;
 
 import org.yaml.snakeyaml.Yaml;
 
@@ -7,7 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Map;
 
-import static org.ximure.simpleauth2.SimpleAuth2.MESSAGES_YAML;
+import static org.ximure.simpleauth.SimpleAuth.MESSAGES_YAML;
 
 public class MessagesUtils {
     Yaml yaml = new Yaml();

@@ -1,4 +1,4 @@
-package org.ximure.simpleauth2.commands;
+package org.ximure.simpleauth.commands;
 
 import org.bukkit.GameMode;
 import org.bukkit.command.Command;
@@ -6,8 +6,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.ximure.simpleauth2.MessagesUtils;
-import org.ximure.simpleauth2.auth.AuthManager;
+import org.ximure.simpleauth.MessagesUtils;
+import org.ximure.simpleauth.auth.AuthManager;
 
 import java.util.UUID;
 
@@ -31,7 +31,7 @@ public class CommandLogin implements CommandExecutor {
             player.sendMessage(alreadyLoggedIn);
             return true;
         }
-        Boolean registered = authManager.sqlIsRegistered(playerUUID);
+        Boolean registered = authManager.isRegistered(playerUUID);
         if (registered == null || !registered) {
             String notRegistered = messagesUtils.getString("not_registered");
             player.sendMessage(notRegistered);
@@ -50,7 +50,7 @@ public class CommandLogin implements CommandExecutor {
             return true;
         }
         String password = args[0];
-        boolean validPassword = authManager.sqlVerifyPassword(playerUUID, password);
+        boolean validPassword = authManager.verifyPassword(playerUUID, password);
         if (validPassword) {
             GameMode previousGameMode = authManager.restoreGameMode(playerUUID);
             String successfullLogin = messagesUtils.getString("successfull_login");

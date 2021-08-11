@@ -1,12 +1,12 @@
-package org.ximure.simpleauth2.commands;
+package org.ximure.simpleauth.commands;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.ximure.simpleauth2.MessagesUtils;
-import org.ximure.simpleauth2.auth.AuthManager;
+import org.ximure.simpleauth.MessagesUtils;
+import org.ximure.simpleauth.auth.AuthManager;
 
 import java.util.UUID;
 
@@ -23,7 +23,7 @@ public class CommandChangePasswordReminder implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
         UUID playerUUID = player.getUniqueId();
-        if (!authManager.sqlChangePasswordReminder(playerUUID, args[0])) {
+        if (!authManager.changePasswordReminder(playerUUID, args[0])) {
             String notSuccessfullReminderChange = messagesUtils.getString("not_successfull_cpr");
             player.sendMessage(notSuccessfullReminderChange);
             return false;

@@ -1,4 +1,4 @@
-package org.ximure.simpleauth2.commands;
+package org.ximure.simpleauth.commands;
 
 import org.bukkit.GameMode;
 import org.bukkit.command.Command;
@@ -6,8 +6,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.ximure.simpleauth2.MessagesUtils;
-import org.ximure.simpleauth2.auth.AuthManager;
+import org.ximure.simpleauth.MessagesUtils;
+import org.ximure.simpleauth.auth.AuthManager;
 
 import java.util.UUID;
 
@@ -25,7 +25,7 @@ public class CommandRegister implements CommandExecutor {
         Player player = (Player) sender;
         UUID playerUUID = player.getUniqueId();
 
-        Boolean registered = authManager.sqlIsRegistered(playerUUID);
+        Boolean registered = authManager.isRegistered(playerUUID);
         if (registered) {
             String alreadyRegistered = messagesUtils.getString("already_registered");
             player.sendMessage(alreadyRegistered);
@@ -54,7 +54,7 @@ public class CommandRegister implements CommandExecutor {
             String password = args[0];
             String passwordReminder = args[1];
             // if inserting data to database goes wrong
-            if (!authManager.sqlInsertPassword(playerUUID, password, passwordReminder)) {
+            if (!authManager.insertPassword(playerUUID, password, passwordReminder)) {
                 String notSuccessfullRegistration = messagesUtils.getString("notSuccessfullRegistration");
                 player.sendMessage(notSuccessfullRegistration);
                 return false;

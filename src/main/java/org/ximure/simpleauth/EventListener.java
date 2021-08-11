@@ -1,4 +1,4 @@
-package org.ximure.simpleauth2;
+package org.ximure.simpleauth;
 
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -6,7 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.ximure.simpleauth2.auth.AuthManager;
+import org.ximure.simpleauth.auth.AuthManager;
 
 import java.util.UUID;
 
@@ -31,7 +31,7 @@ public class EventListener implements Listener {
         authManager.saveGameMode(playerUUID, currentGameMode);
         // enabling spectator gamemode to use less event listeners
         player.setGameMode(GameMode.SPECTATOR);
-        if (authManager.sqlIsRegistered(playerUUID)) {
+        if (authManager.isRegistered(playerUUID)) {
             player.sendMessage(loginMessage);
         } else {
             player.sendMessage(registerMessage);
