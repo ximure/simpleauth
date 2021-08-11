@@ -6,18 +6,18 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.ximure.simpleauth2.StringUtils;
+import org.ximure.simpleauth2.MessagesUtils;
 import org.ximure.simpleauth2.auth.AuthManager;
 
 import java.util.UUID;
 
 public class CommandLogin implements CommandExecutor {
     private final AuthManager authManager;
-    private final StringUtils stringUtils;
+    private final MessagesUtils messagesUtils;
 
-    public CommandLogin(AuthManager authManager, StringUtils stringUtils) {
+    public CommandLogin(AuthManager authManager, MessagesUtils messagesUtils) {
         this.authManager = authManager;
-        this.stringUtils = stringUtils;
+        this.messagesUtils = messagesUtils;
     }
 
     @Override
@@ -27,42 +27,42 @@ public class CommandLogin implements CommandExecutor {
 
         boolean loggedIn = authManager.isOnline(playerUUID);
         if (loggedIn) {
-            String alreadyLoggedInMessage = stringUtils.getString("already_logged_in");
-            player.sendMessage(alreadyLoggedInMessage);
+            String alreadyLoggedIn = messagesUtils.getString("already_logged_in");
+            player.sendMessage(alreadyLoggedIn);
             return true;
         }
-        Boolean registered = authManager.isRegistered(playerUUID);
+        Boolean registered = authManager.sqlIsRegistered(playerUUID);
         if (registered == null || !registered) {
-            String notRegisteredMessage = stringUtils.getString("not_registered");
-            player.sendMessage(notRegisteredMessage);
+            String notRegistered = messagesUtils.getString("not_registered");
+            player.sendMessage(notRegistered);
             return true;
         }
         boolean tooManyStrings = args.length > 1;
         if (tooManyStrings) {
-            String tooManyArgsMessage = stringUtils.getString("too_many_args");
-            player.sendMessage(tooManyArgsMessage);
+            String tooManyArgs = messagesUtils.getString("too_many_args");
+            player.sendMessage(tooManyArgs);
             return true;
         }
         boolean passwordProvided = args.length == 1;
         if (!passwordProvided) {
-            String passwordNotEnteredMessage = stringUtils.getString("password_not_provided");
-            player.sendMessage(passwordNotEnteredMessage);
+            String passwordNotProvided = messagesUtils.getString("password_not_provided");
+            player.sendMessage(passwordNotProvided);
             return true;
         }
         String password = args[0];
-        boolean validPassword = authManager.checkPassword(playerUUID, password);
+        boolean validPassword = authManager.sqlVerifyPassword(playerUUID, password);
         if (validPassword) {
             GameMode previousGameMode = authManager.restoreGameMode(playerUUID);
-            String successfulLoginMessage = stringUtils.getString("successfull_login");
+            String successfullLogin = messagesUtils.getString("successfull_login");
             // setting player status to online so the registration command don't add this user in the database again
             authManager.setOnline(playerUUID);
             // restoring previous gamemode which has been written in onplayerjoin event
             player.setGameMode(previousGameMode);
-            player.sendMessage(successfulLoginMessage);
+            player.sendMessage(successfullLogin);
             return true;
         } else {
-            String wrongPasswordMessage = stringUtils.getString("wrong_password");
-            player.sendMessage(wrongPasswordMessage);
+            String wrongPassword = messagesUtils.getString("wrong_password");
+            player.sendMessage(wrongPassword);
         }
         return true;
     }

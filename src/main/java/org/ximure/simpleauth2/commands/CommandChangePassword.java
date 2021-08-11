@@ -5,18 +5,18 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.ximure.simpleauth2.StringUtils;
+import org.ximure.simpleauth2.MessagesUtils;
 import org.ximure.simpleauth2.auth.AuthManager;
 
 import java.util.UUID;
 
 public class CommandChangePassword implements CommandExecutor {
     private final AuthManager authManager;
-    private final StringUtils stringUtils;
+    private final MessagesUtils messagesUtils;
 
-    public CommandChangePassword(AuthManager authManager, StringUtils stringUtils) {
+    public CommandChangePassword(AuthManager authManager, MessagesUtils messagesUtils) {
         this.authManager = authManager;
-        this.stringUtils = stringUtils;
+        this.messagesUtils = messagesUtils;
     }
 
     @Override
@@ -26,36 +26,40 @@ public class CommandChangePassword implements CommandExecutor {
 
         boolean nothingProvided = args.length == 0;
         if (nothingProvided) {
-            String nothingProvidedMessage = stringUtils.getString("no_password_reminder");
+            String nothingProvidedMessage = messagesUtils.getString("no_password_reminder");
             player.sendMessage(nothingProvidedMessage);
-            return true;
+            return false;
         }
         boolean newPasswordNotProvided = args.length == 1;
         if (newPasswordNotProvided) {
-            String newPasswordNotProvidedMessage = stringUtils.getString("no_new_password");
+            String newPasswordNotProvidedMessage = messagesUtils.getString("no_new_password");
             player.sendMessage(newPasswordNotProvidedMessage);
-            return true;
+            return false;
         }
         boolean tooManyArgs = args.length > 2;
         if (tooManyArgs) {
-            String tooManyArgsMessage = stringUtils.getString("too_many_args");
+            String tooManyArgsMessage = messagesUtils.getString("too_many_args");
             player.sendMessage(tooManyArgsMessage);
-            return true;
+            return false;
         }
         else {
             String oldPassword = args[0];
-            Boolean validPassword = authManager.checkPassword(playerUUID, oldPassword);
+            Boolean validPassword = authManager.sqlVerifyPassword(playerUUID, oldPassword);
             if (validPassword != null && validPassword) {
                 String newPassword = args[1];
-                String successfullPasswordChange = stringUtils.getString("successfull_password_change");
+                if (!authManager.sqlChangePassword(playerUUID, newPassword)) {
+                    String notSuccessfullPasswordChange = messagesUtils.getString("not_successfull_cpw");
+                    player.sendMessage(notSuccessfullPasswordChange);
+                    return false;
+                }
+                String successfullPasswordChange = messagesUtils.getString("successfull_password_change");
                 // changing password in the database
-                authManager.changePassword(playerUUID, newPassword);
                 player.sendMessage(successfullPasswordChange);
                 return true;
             }
-            String wrongOldPasswordMessage = stringUtils.getString("wrong_old_password");
+            String wrongOldPasswordMessage = messagesUtils.getString("wrong_old_password");
             player.sendMessage(wrongOldPasswordMessage);
+            return false;
         }
-        return true;
     }
 }

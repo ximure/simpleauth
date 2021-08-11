@@ -12,11 +12,12 @@ public class AuthManager extends PlayerStatus {
      * Inserts player uuid, password and password reminder into the database
      * @return  true if data has been written, false if something will go wrong
      */
-    public Boolean setPassword(UUID playerUUID, String password, String passwordReminder) {
+    public Boolean sqlInsertPassword(UUID playerUUID, String password, String passwordReminder) {
         final String formattedUUID = playerUUID.toString().replace("-", "");
         final String query = "INSERT INTO passwords(uuid, password, password_reminder) VALUES(?, ?, ?)";
         try {
             Connection connection = this.connectToDatabase();
+            assert connection != null;
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, formattedUUID);
             preparedStatement.setString(2, password);
@@ -32,18 +33,22 @@ public class AuthManager extends PlayerStatus {
      * Changes password associated with uuid
      * @param playerUUID    playerUUID - to find in the database to change password associated with it
      * @param newPassword   newPassword - oldPassword will be changed to this one
+     * @return  true if data has been written, false if something will go wrong
      */
-    public void changePassword(UUID playerUUID, String newPassword) {
+    public Boolean sqlChangePassword(UUID playerUUID, String newPassword) {
         String formattedUUID = playerUUID.toString().replace("-", "");
         try {
             String query = "UPDATE passwords SET password = ? WHERE uuid = ?";
             Connection connection = this.connectToDatabase();
+            assert connection != null;
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, newPassword);
             preparedStatement.setString(2, formattedUUID);
             preparedStatement.executeUpdate();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -53,17 +58,20 @@ public class AuthManager extends PlayerStatus {
      * @param playerUUID            playerUUID - to find in the database to change password reminder associated with it
      * @param newPasswordReminder   newPasswordReminder - old password reminder will be changed to this one
      */
-    public void changePasswordReminder(UUID playerUUID, String newPasswordReminder) {
+    public Boolean sqlChangePasswordReminder(UUID playerUUID, String newPasswordReminder) {
         String formattedUUID = playerUUID.toString().replace("-", "");
         try {
             String query = "UPDATE passwords SET password_reminder = ? WHERE uuid = ?";
             Connection connection = this.connectToDatabase();
+            assert connection != null;
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, newPasswordReminder);
             preparedStatement.setString(2, formattedUUID);
             preparedStatement.executeUpdate();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -72,11 +80,12 @@ public class AuthManager extends PlayerStatus {
      * @return              true if player is registered, false if not, null if something will go wrong
      * @param playerUUID    playerUUID to check if it exists in the database
      */
-    public Boolean isRegistered(UUID playerUUID) throws NullPointerException {
+    public Boolean sqlIsRegistered(UUID playerUUID) throws NullPointerException {
         final String formattedUUID = playerUUID.toString().replace("-", "");
         final String query = "SELECT uuid FROM passwords WHERE uuid LIKE '" + formattedUUID + "'";
         try {
             Connection connection = this.connectToDatabase();
+            assert connection != null;
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             return resultSet.getString("uuid").equals(formattedUUID);
@@ -91,11 +100,12 @@ public class AuthManager extends PlayerStatus {
      * @param playerUUID    playerUUID which will be used to get reminder in the database
      * @return              password reminder string. Null if something will go wrong
      */
-    public String getPasswordReminder(UUID playerUUID) {
+    public String sqlGetPasswordReminder(UUID playerUUID) {
         final String formattedUUID = playerUUID.toString().replace("-", "");
         final String query = "SELECT password_reminder FROM passwords WHERE uuid LIKE '" + formattedUUID + "'";
         try {
             Connection connection = this.connectToDatabase();
+            assert connection != null;
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             return resultSet.getString("password_reminder");
@@ -112,11 +122,12 @@ public class AuthManager extends PlayerStatus {
      * @return              true if password player entered is the same in the database, else - false. Null if password
      * does not exist
      */
-    public Boolean checkPassword(UUID playerUUID, String password) {
+    public Boolean sqlVerifyPassword(UUID playerUUID, String password) {
         final String formattedUUID = playerUUID.toString().replace("-", "");
         final String query = "SELECT password FROM passwords WHERE uuid LIKE '" + formattedUUID + "'";
         try {
             Connection connection = this.connectToDatabase();
+            assert connection != null;
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             return resultSet.getString("password").equals(password);
@@ -148,7 +159,7 @@ public class AuthManager extends PlayerStatus {
      * This method simply created a database if it not exists
      * @return  Boolean true if database has been created. False otherwise
      */
-    public Boolean createDatabase() {
+    public Boolean sqlCreateDatabase() {
         final String url = "jdbc:sqlite:" + PASSWORDS_DATABASE;
         try {
             Connection connection = DriverManager.getConnection(url);
@@ -166,7 +177,7 @@ public class AuthManager extends PlayerStatus {
      * This method creates a passwords table to store players passwords if it not already exists
      * @return  Boolean true if table has been created. False otherwise
      */
-    public Boolean createPasswordsTable() {
+    public Boolean sqlCreatePasswordsTable() {
         String url = "jdbc:sqlite:" + PASSWORDS_DATABASE;
         String sql = "CREATE TABLE IF NOT EXISTS passwords (\n"
                 + "	uuid TEXT, \n"

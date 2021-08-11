@@ -7,17 +7,24 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Map;
 
-public class StringUtils {
+import static org.ximure.simpleauth2.SimpleAuth2.MESSAGES_YAML;
+
+public class MessagesUtils {
+    Yaml yaml = new Yaml();
 
     public String getString(String stringName) {
         try {
-            InputStream stringsFile = new FileInputStream("./plugins/SimpleAuth2/messages.yml");
-            Yaml yaml = new Yaml();
+            InputStream stringsFile = new FileInputStream(MESSAGES_YAML);
             Map<String, Object> data = yaml.load(stringsFile);
             return data.get(stringName).toString();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public Boolean createTemplate() {
+        // TODO: yaml template creating
+        return true;
     }
 }

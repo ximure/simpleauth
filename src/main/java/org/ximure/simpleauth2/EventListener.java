@@ -13,11 +13,11 @@ import java.util.UUID;
 public class EventListener implements Listener {
     // TODO: a lot of listeners to check if what player can do while logged in, registered etc
     private final AuthManager authManager;
-    private final StringUtils stringUtils;
+    private final MessagesUtils messagesUtils;
 
-    public EventListener(AuthManager authManager, StringUtils stringUtils) {
+    public EventListener(AuthManager authManager, MessagesUtils messagesUtils) {
         this.authManager = authManager;
-        this.stringUtils = stringUtils;
+        this.messagesUtils = messagesUtils;
     }
 
     @EventHandler
@@ -25,13 +25,13 @@ public class EventListener implements Listener {
         Player player = e.getPlayer();
         UUID playerUUID = player.getUniqueId();
         GameMode currentGameMode = player.getGameMode();
-        String loginMessage = stringUtils.getString("login_message");
-        String registerMessage = stringUtils.getString("register_message");
+        String loginMessage = messagesUtils.getString("login_message");
+        String registerMessage = messagesUtils.getString("register_message");
         // storing previous player gamemode to restore if after registration/login
         authManager.saveGameMode(playerUUID, currentGameMode);
         // enabling spectator gamemode to use less event listeners
         player.setGameMode(GameMode.SPECTATOR);
-        if (authManager.isRegistered(playerUUID)) {
+        if (authManager.sqlIsRegistered(playerUUID)) {
             player.sendMessage(loginMessage);
         } else {
             player.sendMessage(registerMessage);
