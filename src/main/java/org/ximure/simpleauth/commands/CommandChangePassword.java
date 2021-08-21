@@ -1,5 +1,6 @@
 package org.ximure.simpleauth.commands;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -48,10 +49,10 @@ public class CommandChangePassword implements CommandExecutor {
             Boolean validPassword = authManager.verifyPassword(playerUUID, oldPassword);
             // if old password is valid and there's a data in the database at all
             if (validPassword) {
-                String newPassword = args[1];
+                String hashedNewPassword = DigestUtils.sha256Hex(args[1]);
                 // trying to change player's password in the database. If something goes wrong
                 // this block will be executed
-                if (!authManager.changePassword(playerUUID, newPassword)) {
+                if (!authManager.changePassword(playerUUID, hashedNewPassword)) {
                     String notSuccessfullPasswordChange = utils.getString("not_successfull_cpw");
                     player.sendMessage(notSuccessfullPasswordChange);
                     return true;

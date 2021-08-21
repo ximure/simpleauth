@@ -1,5 +1,6 @@
 package org.ximure.simpleauth.commands;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.bukkit.GameMode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -47,18 +48,17 @@ public class CommandRegister implements CommandExecutor {
         }
         boolean passwordAndReminderProvided = args.length > 2;
         if (passwordAndReminderProvided) {
-            String password = args[0];
+            String hashedPassword = DigestUtils.sha256Hex(args[0]);
             String passwordReminder = utils.getAllArgsString(args, true);
             // adding player's uuid, password and reminder to the database and checking
             // if inserting data to database goes wrong
-            if (!authManager.insertPassword(playerUUID, password, passwordReminder)) {
+            if (!authManager.insertPassword(playerUUID, hashedPassword, passwordReminder)) {
                 String notSuccessfullRegistration = utils.getString("not_successfull_registration");
                 player.sendMessage(notSuccessfullRegistration);
                 return true;
             }
             String successfullRegistration = utils.getString("successfull_registration");
             GameMode previousGameMode = authManager.restoreGameMode(playerUUID);
-            // setting player status to online so the registration command don't add this user in the database again
             authManager.setOnline(playerUUID);
             // restoring previous gamemode which has been written in onplayerjoin event
             player.setGameMode(previousGameMode);

@@ -51,8 +51,8 @@ public class CommandLogin implements CommandExecutor {
             player.sendMessage(passwordNotProvided);
             return true;
         }
-        String password = args[0];
-        boolean validPassword = authManager.verifyPassword(playerUUID, password);
+        String hashedPassword = args[0];
+        boolean validPassword = authManager.verifyPassword(playerUUID, hashedPassword);
         // if password is valid - we'll let player on a server
         if (validPassword) {
             GameMode previousGameMode = authManager.restoreGameMode(playerUUID);
