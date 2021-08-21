@@ -14,5 +14,5 @@ You can modify any messages in in-game chat by editing "messages.yml" file insid
 **- /cpw** or **/changepassword** to change your password  
 **- /cpr** or **/changepasswordreminder** to change your password reminder
 
-### TODO
+### TODO:
 Permissions system. Who would not want to change another player password or reminder?
