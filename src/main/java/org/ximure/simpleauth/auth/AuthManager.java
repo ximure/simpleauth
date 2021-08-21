@@ -13,13 +13,12 @@ public class AuthManager extends PlayerStatus {
      * @return  true if data has been written, false if something will go wrong
      */
     public Boolean insertPassword(UUID playerUUID, String password, String passwordReminder) {
-        final String formattedUUID = playerUUID.toString().replace("-", "");
         final String query = "INSERT INTO passwords(uuid, password, password_reminder) VALUES(?, ?, ?)";
         try {
             Connection connection = this.connectToDatabase();
             assert connection != null;
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, formattedUUID);
+            preparedStatement.setString(1, playerUUID.toString());
             preparedStatement.setString(2, password);
             preparedStatement.setString(3, passwordReminder);
             preparedStatement.execute();
@@ -31,20 +30,19 @@ public class AuthManager extends PlayerStatus {
     }
 
     /**
-     * Changes password associated with uuid
-     * @param playerUUID    playerUUID - to find in the database to change password associated with it
-     * @param newPassword   newPassword - oldPassword will be changed to this one
+     * Changes password associated with player uuid
+     * @param playerUUID    this will be used to find password in the database
+     * @param newPassword   oldPassword will be changed to this one
      * @return  true if data has been written, false if something will go wrong
      */
     public Boolean changePassword(UUID playerUUID, String newPassword) {
-        String formattedUUID = playerUUID.toString().replace("-", "");
         try {
             String query = "UPDATE passwords SET password = ? WHERE uuid = ?";
             Connection connection = this.connectToDatabase();
             assert connection != null;
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, newPassword);
-            preparedStatement.setString(2, formattedUUID);
+            preparedStatement.setString(2, playerUUID.toString());
             preparedStatement.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -55,19 +53,18 @@ public class AuthManager extends PlayerStatus {
 
     /**
      * Changes password reminder associated with uuid
-     * @return                      true - if password reminder has been changed, false if something will go wrong
-     * @param playerUUID            playerUUID - to find in the database to change password reminder associated with it
-     * @param newPasswordReminder   newPasswordReminder - old password reminder will be changed to this one
+     * @return                      true if password reminder has been changed, false if something will go wrong
+     * @param playerUUID            this will be used to find password reminder in the database
+     * @param newPasswordReminder   old password reminder will be changed to this one
      */
     public Boolean changePasswordReminder(UUID playerUUID, String newPasswordReminder) {
-        String formattedUUID = playerUUID.toString().replace("-", "");
         try {
             String query = "UPDATE passwords SET password_reminder = ? WHERE uuid = ?";
             Connection connection = this.connectToDatabase();
             assert connection != null;
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, newPasswordReminder);
-            preparedStatement.setString(2, formattedUUID);
+            preparedStatement.setString(2, playerUUID.toString());
             preparedStatement.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -78,31 +75,30 @@ public class AuthManager extends PlayerStatus {
 
     /**
      * Checks if player's UUID exists in database. If not - he's not registered
-     * @return              true if player is registered, false if not, null if something will go wrong
-     * @param playerUUID    playerUUID to check if it exists in the database
+     * @return              true if player uuid is in the database, false otherwise
+     * @param playerUUID    this one will be used to find player in the database
      */
     public Boolean isRegistered(UUID playerUUID) throws NullPointerException {
-        final String formattedUUID = playerUUID.toString().replace("-", "");
-        final String query = "SELECT uuid FROM passwords WHERE uuid LIKE '" + formattedUUID + "'";
+        final String query = "SELECT uuid FROM passwords WHERE uuid = '" + playerUUID + "'";
         try {
             Connection connection = this.connectToDatabase();
             assert connection != null;
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
-            return resultSet.getString("uuid").equals(formattedUUID);
+            return resultSet.getString("uuid").equals(playerUUID.toString());
         } catch (SQLException e) {
+            e.printStackTrace();
             return false;
         }
     }
 
     /**
      * Returns a password reminder string which player entered while registering. Null if something will go wrong
-     * @param playerUUID    playerUUID which will be used to get reminder in the database
+     * @param playerUUID    this will be used to get reminder in the database
      * @return              password reminder string. Null if something will go wrong
      */
     public String getPasswordReminder(UUID playerUUID) {
-        final String formattedUUID = playerUUID.toString().replace("-", "");
-        final String query = "SELECT password_reminder FROM passwords WHERE uuid LIKE '" + formattedUUID + "'";
+        final String query = "SELECT password_reminder FROM passwords WHERE uuid = '" + playerUUID + "'";
         try {
             Connection connection = this.connectToDatabase();
             assert connection != null;
@@ -110,20 +106,19 @@ public class AuthManager extends PlayerStatus {
             ResultSet resultSet = statement.executeQuery(query);
             return resultSet.getString("password_reminder");
         } catch (SQLException e) {
+            e.printStackTrace();
             return null;
         }
     }
 
     /**
      * Compares player entered password with one's in the database
-     * @param playerUUID    playerUUID to find which player password needs to be compared
-     * @param password      password which player entered in in-game chat
-     * @return              true if password player entered is the same in the database, else - false. Null if password
-     * does not exist
+     * @param playerUUID    associated to get old password inside method
+     * @param password      which player entered in in-game chat via /register command
+     * @return              true if password player entered is the same in the database, otherwise false
      */
     public Boolean verifyPassword(UUID playerUUID, String password) throws NullPointerException {
-        final String formattedUUID = playerUUID.toString().replace("-", "");
-        final String query = "SELECT password FROM passwords WHERE uuid LIKE '" + formattedUUID + "'";
+        final String query = "SELECT password FROM passwords WHERE uuid = '" + playerUUID + "'";
         try {
             Connection connection = this.connectToDatabase();
             assert connection != null;
@@ -150,8 +145,8 @@ public class AuthManager extends PlayerStatus {
             return connection;
         } catch (SQLException e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     /**
@@ -167,7 +162,6 @@ public class AuthManager extends PlayerStatus {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
         return false;
     }

@@ -24,17 +24,12 @@ public class EventListener implements Listener {
         Player player = e.getPlayer();
         UUID playerUUID = player.getUniqueId();
         GameMode currentGameMode = player.getGameMode();
-        String loginMessage = utils.getString("login_message");
-        String registerMessage = utils.getString("register_message");
+        String message = utils.getString(authManager.isRegistered(playerUUID) ? "login_message" : "register_message");
         // saving current player's gamemode before switching it to spectator to restore it later
         authManager.saveGameMode(playerUUID, currentGameMode);
         // enabling spectator gamemode to use less event listeners
         player.setGameMode(GameMode.SPECTATOR);
-        if (authManager.isRegistered(playerUUID)) {
-            player.sendMessage(loginMessage);
-        } else {
-            player.sendMessage(registerMessage);
-        }
+        player.sendMessage(message);
     }
 
     @EventHandler

@@ -47,7 +47,7 @@ public class CommandChangePassword implements CommandExecutor {
             String oldPassword = args[0];
             Boolean validPassword = authManager.verifyPassword(playerUUID, oldPassword);
             // if old password is valid and there's a data in the database at all
-            if (validPassword != null && validPassword) {
+            if (validPassword) {
                 String newPassword = args[1];
                 // trying to change player's password in the database. If something goes wrong
                 // this block will be executed

@@ -8,16 +8,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import static org.ximure.simpleauth.SimpleAuth.MESSAGES_YAML;
 
 public class Utils {
-    private final Logger logger;
-
-    public Utils(Logger logger) {
-        this.logger = logger;
-    }
 
     /**
      * Via this method you can retrieve all args length (in symbols, without spaces)
@@ -82,11 +76,6 @@ public class Utils {
             assert plugin != null;
             plugin.saveResource("messages.yml", false);
         }
-        if (!MESSAGES_YAML.exists()) {
-            logger.info("[SimpleAuth] Messages YAML config cannot be created. Maybe something wrong with" +
-                    "folder permissions?");
-            return false;
-        }
-        return true;
+        return MESSAGES_YAML.exists();
     }
 }

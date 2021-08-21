@@ -34,7 +34,7 @@ public class CommandLogin implements CommandExecutor {
             return true;
         }
         Boolean registered = authManager.isRegistered(playerUUID);
-        if (registered == null || !registered) {
+        if (!registered) {
             String notRegistered = utils.getString("not_registered");
             player.sendMessage(notRegistered);
             return true;

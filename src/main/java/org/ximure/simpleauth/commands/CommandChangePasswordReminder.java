@@ -25,8 +25,8 @@ public class CommandChangePasswordReminder implements CommandExecutor {
         Player player = (Player) sender;
         UUID playerUUID = player.getUniqueId();
         // if no reminder was provided we'll warn a player
-        boolean reminderProvided = args.length > 0;
-        if (!reminderProvided) {
+        boolean reminderNotProvided = args.length == 0;
+        if (reminderNotProvided) {
             String noReminder = utils.getString("no_reminder");
             player.sendMessage(noReminder);
             return true;

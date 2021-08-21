@@ -18,7 +18,7 @@ public final class SimpleAuth extends JavaPlugin {
     public final String ANSI_RESET = "\u001B[0m";
     private final AuthManager authManager = new AuthManager();
     private final Logger logger = Bukkit.getLogger();
-    private final Utils utils = new Utils(logger);
+    private final Utils utils = new Utils();
 
     @Override
     public void onEnable() {
