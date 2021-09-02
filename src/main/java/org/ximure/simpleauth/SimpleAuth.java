@@ -2,8 +2,8 @@ package org.ximure.simpleauth;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.ximure.simpleauth.auth.AuthManager;
 import org.ximure.simpleauth.commands.*;
+import org.ximure.simpleauth.misc.Utils;
 
 import java.io.File;
 import java.util.Objects;
@@ -44,7 +44,7 @@ public final class SimpleAuth extends JavaPlugin {
         }
         // if messages template config does not exist - this block will create it
         if (!MESSAGES_YAML.exists()) {
-            if (!utils.createTemplate()) {
+            if (!utils.createYmlTemplate()) {
                 logger.info(ANSI_RED + "[SimpleAuth] Messages config template cannot be created" + ANSI_RESET);
                 Bukkit.getPluginManager().disablePlugin(this);
             }

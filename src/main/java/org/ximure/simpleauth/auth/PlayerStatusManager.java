@@ -4,7 +4,7 @@ import org.bukkit.GameMode;
 
 import java.util.*;
 
-public class PlayerStatus {
+public class PlayerStatusManager {
     final Map<UUID, GameMode> gameModeStatus = new HashMap<>();
     final List<UUID> loginStatus = new ArrayList<>();
 

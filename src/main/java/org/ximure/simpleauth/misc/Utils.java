@@ -1,4 +1,4 @@
-package org.ximure.simpleauth;
+package org.ximure.simpleauth.misc;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -54,7 +54,7 @@ public class Utils {
      * @param stringName    which string to retrieve. All strings are located under /plugins/SimpleAuth/messages.yml
      * @return              string which has been accessed. Null if this string does not exist
      */
-    public String getString(String stringName) {
+    public String getStringFromYml(String stringName) {
         Yaml yaml = new Yaml();
         try {
             InputStream stringsFile = new FileInputStream(MESSAGES_YAML);
@@ -70,7 +70,7 @@ public class Utils {
      * This method creates a default messages.yml with all messages which plugin uses to display in-game messages
      * @return  true if file has been created, false otherwise
      */
-    public Boolean createTemplate() {
+    public Boolean createYmlTemplate() {
         if (!MESSAGES_YAML.exists()) {
             Plugin plugin = Bukkit.getPluginManager().getPlugin("SimpleAuth");
             assert plugin != null;

@@ -5,8 +5,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.ximure.simpleauth.Utils;
-import org.ximure.simpleauth.auth.AuthManager;
+import org.ximure.simpleauth.misc.Utils;
 
 import java.util.UUID;
 
@@ -27,12 +26,12 @@ public class CommandSendPasswordReminder implements CommandExecutor {
         String passwordReminder = AuthManager.getPasswordReminder(playerUUID);
         // if player associated uuid does not contain reminder yet
         if (passwordReminder == null) {
-            String noReminder = utils.getString("no_reminder_yet");
+            String noReminder = utils.getStringFromYml("no_reminder_yet");
             player.sendMessage(noReminder);
             return true;
         }
         // if everything goes ok we'll send a player his password reminder
-        String passwordReminderMessage = utils.getString("reminder_message");
+        String passwordReminderMessage = utils.getStringFromYml("reminder_message");
         player.sendMessage(passwordReminderMessage + passwordReminder);
         return true;
     }

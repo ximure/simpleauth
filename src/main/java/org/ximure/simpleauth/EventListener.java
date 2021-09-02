@@ -6,7 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
-import org.ximure.simpleauth.auth.AuthManager;
+import org.ximure.simpleauth.misc.Utils;
 
 import java.util.UUID;
 
@@ -24,7 +24,7 @@ public class EventListener implements Listener {
         Player player = e.getPlayer();
         UUID playerUUID = player.getUniqueId();
         GameMode currentGameMode = player.getGameMode();
-        String message = utils.getString(authManager.isRegistered(playerUUID) ? "login_message" : "register_message");
+        String message = utils.getStringFromYml(authManager.isRegistered(playerUUID) ? "login_message" : "register_message");
         // saving current player's gamemode before switching it to spectator to restore it later
         authManager.saveGameMode(playerUUID, currentGameMode);
         // enabling spectator gamemode to use less event listeners
@@ -64,7 +64,7 @@ public class EventListener implements Listener {
         Player player = event.getPlayer();
         String message = event.getMessage();
         UUID playerUUID = player.getUniqueId();
-        String notRegisteredOrLoggedIn = utils.getString("no_command");
+        String notRegisteredOrLoggedIn = utils.getStringFromYml("no_command");
         if (!authManager.isOnline(playerUUID)) {
             boolean allowedCommands = message.contains("/login") || message.contains("/register") ||
                     message.contains("/remindpassword");
