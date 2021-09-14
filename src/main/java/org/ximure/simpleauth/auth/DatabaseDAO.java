@@ -5,14 +5,13 @@ import java.util.UUID;
 
 import static org.ximure.simpleauth.SimpleAuth.PASSWORDS_DATABASE;
 
-public class SQLiteManager implements Database {
+public class DatabaseDAO {
     private static Connection connection;
 
     /**
      * Inserts player uuid, password and password reminder into the database
      * @return true if data has been written, false if something will go wrong
      */
-    @Override
     public Boolean insertPassword(UUID playerUUID, String password, String passwordReminder) {
         final String query = "INSERT INTO passwords(uuid, password, password_reminder) VALUES(?, ?, ?)";
         Connection connection = this.connectToDatabase();
@@ -36,7 +35,6 @@ public class SQLiteManager implements Database {
      * @param newPassword oldPassword will be changed to this one
      * @return true if data has been written, false if something will go wrong
      */
-    @Override
     public Boolean changePassword(UUID playerUUID, String newPassword) {
         try {
             String query = "UPDATE passwords SET password = ? WHERE uuid = ?";
@@ -59,11 +57,10 @@ public class SQLiteManager implements Database {
      * @param newPasswordReminder old password reminder will be changed to this one
      * @return true if password reminder has been changed, false if something will go wrong
      */
-    @Override
     public Boolean changePasswordReminder(UUID playerUUID, String newPasswordReminder) {
         try {
             String query = "UPDATE passwords SET password_reminder = ? WHERE uuid = ?";
-            Connection connection = this.connectToDatabase();
+            Connection connection = getConnection();
             assert connection != null;
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, newPasswordReminder);
@@ -77,11 +74,10 @@ public class SQLiteManager implements Database {
     }
 
     /**
-     * Checks if player's UUID exists in database. If not - he's not registere
+     * Checks if player's UUID exists in database. If not - he's not registered
      * @param playerUUID this one will be used to find player in the database
      * @return true if player uuid is in the database, false otherwise
      */
-    @Override
     public Boolean isRegistered(UUID playerUUID) throws NullPointerException {
         final String query = "SELECT uuid FROM passwords WHERE uuid = '" + playerUUID + "'";
         Connection connection = this.connectToDatabase();
@@ -101,7 +97,6 @@ public class SQLiteManager implements Database {
      * @param playerUUID this will be used to get reminder in the database
      * @return password reminder string. Null if something will go wrong
      */
-    @Override
     public String getPasswordReminder(UUID playerUUID) {
         final String query = "SELECT password_reminder FROM passwords WHERE uuid = '" + playerUUID + "'";
         Connection connection = this.connectToDatabase();
@@ -122,7 +117,6 @@ public class SQLiteManager implements Database {
      * @param password   which player entered in in-game chat via /register command
      * @return true if password player entered is the same in the database, otherwise false
      */
-    @Override
     public Boolean isCorrectPassword(UUID playerUUID, String password) throws NullPointerException {
         final String query = "SELECT password FROM passwords WHERE uuid = '" + playerUUID + "'";
         Connection connection = this.connectToDatabase();
@@ -141,7 +135,6 @@ public class SQLiteManager implements Database {
      * This method simply creates a database if it not exists
      * @return Boolean true if database has been created. False otherwise
      */
-    @Override
     public Boolean createDatabase() {
         final String url = "jdbc:sqlite:" + PASSWORDS_DATABASE;
         try {
@@ -159,16 +152,14 @@ public class SQLiteManager implements Database {
      * This method creates a passwords table to store players passwords if it not already exists
      * @return Boolean true if table has been created. False otherwise
      */
-    @Override
     public Boolean createPasswordsTable() {
-        String url = "jdbc:sqlite:" + PASSWORDS_DATABASE;
         String query = "CREATE TABLE IF NOT EXISTS passwords (\n"
                 + "	uuid TEXT, \n"
                 + "	password TEXT,\n"
                 + "	password_reminder TEXT\n"
                 + ");";
         try {
-            Connection connection = DriverManager.getConnection(url);
+            Connection connection = getConnection();
             Statement statement = connection.createStatement();
             statement.execute(query);
             return true;
@@ -176,6 +167,16 @@ public class SQLiteManager implements Database {
             e.printStackTrace();
             return false;
         }
+    }
+
+    /*
+    * This method used to get existing connection or to create one inside DAO
+    */
+    private Connection getConnection() {
+        if (connection == null) {
+            return connectToDatabase();
+        }
+        return connection;
     }
 
     /**

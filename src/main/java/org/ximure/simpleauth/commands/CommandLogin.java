@@ -6,6 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.ximure.simpleauth.auth.AuthManager;
 import org.ximure.simpleauth.misc.Utils;
 
 import java.util.UUID;
@@ -51,16 +52,16 @@ public class CommandLogin implements CommandExecutor {
             return true;
         }
         String hashedPassword = args[0];
-        boolean validPassword = authManager.verifyPassword(playerUUID, hashedPassword);
+        boolean validPassword = authManager.isCorrectPassword(playerUUID, hashedPassword);
         // if password is valid - we'll let player on a server
         if (validPassword) {
-            GameMode previousGameMode = authManager.restoreGameMode(playerUUID);
-            String successfullLogin = utils.getStringFromYml("successfull_login");
+            GameMode previousGameMode = authManager.getGamemodeBeforeLogin(playerUUID);
+            String successfullLoginMessage = utils.getStringFromYml("successfull_login");
             // setting playerStatus to online. Player won't be able to use /register or /login command after that
-            authManager.setOnline(playerUUID);
+            authManager.setOnline(playerUUID, player.getGameMode());
             // restoring previous gamemode which has been written in onplayerjoin event
             player.setGameMode(previousGameMode);
-            player.sendMessage(successfullLogin);
+            player.sendMessage(successfullLoginMessage);
         } else {
             // if password is not valid - we won't let player on a server
             String wrongPassword = utils.getStringFromYml("wrong_password");

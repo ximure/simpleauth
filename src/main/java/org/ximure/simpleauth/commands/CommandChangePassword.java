@@ -6,6 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.ximure.simpleauth.auth.AuthManager;
 import org.ximure.simpleauth.misc.Utils;
 
 import java.util.UUID;
@@ -45,7 +46,7 @@ public class CommandChangePassword implements CommandExecutor {
         }
         else {
             String oldPassword = args[0];
-            Boolean validPassword = authManager.verifyPassword(playerUUID, oldPassword);
+            Boolean validPassword = authManager.isCorrectPassword(playerUUID, oldPassword);
             // if old password is valid and there's a data in the database at all
             if (validPassword) {
                 String hashedNewPassword = DigestUtils.sha256Hex(args[1]);

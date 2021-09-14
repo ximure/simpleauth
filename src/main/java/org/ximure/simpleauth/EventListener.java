@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
+import org.ximure.simpleauth.auth.AuthManager;
 import org.ximure.simpleauth.misc.Utils;
 
 import java.util.UUID;
@@ -26,7 +27,7 @@ public class EventListener implements Listener {
         GameMode currentGameMode = player.getGameMode();
         String message = utils.getStringFromYml(authManager.isRegistered(playerUUID) ? "login_message" : "register_message");
         // saving current player's gamemode before switching it to spectator to restore it later
-        authManager.saveGameMode(playerUUID, currentGameMode);
+        authManager.setGamemodeBeforeLogin(playerUUID, currentGameMode);
         // enabling spectator gamemode to use less event listeners
         player.setGameMode(GameMode.SPECTATOR);
         player.sendMessage(message);
@@ -38,7 +39,7 @@ public class EventListener implements Listener {
         UUID playerUUID = player.getUniqueId();
         // restoring saved player gamemode in case he didn't log in or register
         if (!authManager.isOnline(playerUUID)) {
-            GameMode playerGameMode = authManager.restoreGameMode(playerUUID);
+            GameMode playerGameMode = authManager.getGamemodeBeforeLogin(playerUUID);
             player.setGameMode(playerGameMode);
         }
         authManager.setOffline(playerUUID);
@@ -78,7 +79,7 @@ public class EventListener implements Listener {
     }
 
     // Blocking player from...
-    // Using RMB on something (opening chests, shear sheep etc)
+    // Using RMB on something (opening chests, shear sheep etc.)
     @EventHandler
     public void onPlayerInteraction(PlayerInteractEvent event) {
         UUID playerUUID = event.getPlayer().getUniqueId();

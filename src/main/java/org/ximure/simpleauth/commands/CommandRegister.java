@@ -7,6 +7,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.ximure.simpleauth.auth.AuthManager;
 import org.ximure.simpleauth.misc.Utils;
 
 import java.util.UUID;
@@ -57,18 +58,17 @@ public class CommandRegister implements CommandExecutor {
                 return true;
             }
             String successfullRegistration = utils.getStringFromYml("successfull_registration");
-            GameMode previousGameMode = authManager.restoreGameMode(playerUUID);
-            authManager.setOnline(playerUUID);
+            GameMode previousGameMode = authManager.getGamemodeBeforeLogin(playerUUID);
+            authManager.setOnline(playerUUID, player.getGameMode());
             // restoring previous gamemode which has been written in onplayerjoin event
             player.setGameMode(previousGameMode);
             player.sendMessage(successfullRegistration);
-            return true;
         }
         else {
             // if player entered too many arguments
             String tooManyArgs = utils.getStringFromYml("too_many_args");
             player.sendMessage(tooManyArgs);
-            return true;
         }
+        return true;
     }
 }

@@ -5,6 +5,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.ximure.simpleauth.auth.AuthManager;
 import org.ximure.simpleauth.misc.Utils;
 
 import java.util.UUID;

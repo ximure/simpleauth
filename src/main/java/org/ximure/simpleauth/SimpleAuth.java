@@ -2,6 +2,7 @@ package org.ximure.simpleauth;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.ximure.simpleauth.auth.AuthManager;
 import org.ximure.simpleauth.commands.*;
 import org.ximure.simpleauth.misc.Utils;
 
@@ -66,7 +67,6 @@ public final class SimpleAuth extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        authManager.clearGameModes();
-        authManager.clearOnlineStatuses();
+        // TODO: write plugin disable logic
     }
 }
