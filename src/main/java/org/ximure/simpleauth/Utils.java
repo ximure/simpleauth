@@ -1,4 +1,4 @@
-package org.ximure.simpleauth.misc;
+package org.ximure.simpleauth;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -8,10 +8,16 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import static org.ximure.simpleauth.SimpleAuth.MESSAGES_YAML;
 
 public class Utils {
+    private final Logger logger;
+
+    public Utils(Logger logger) {
+        this.logger = logger;
+    }
 
     /**
      * Via this method you can retrieve all args length (in symbols, without spaces)
@@ -54,7 +60,7 @@ public class Utils {
      * @param stringName    which string to retrieve. All strings are located under /plugins/SimpleAuth/messages.yml
      * @return              string which has been accessed. Null if this string does not exist
      */
-    public String getStringFromYml(String stringName) {
+    public String getString(String stringName) {
         Yaml yaml = new Yaml();
         try {
             InputStream stringsFile = new FileInputStream(MESSAGES_YAML);
@@ -70,12 +76,17 @@ public class Utils {
      * This method creates a default messages.yml with all messages which plugin uses to display in-game messages
      * @return  true if file has been created, false otherwise
      */
-    public Boolean createYmlTemplate() {
+    public Boolean createTemplate() {
         if (!MESSAGES_YAML.exists()) {
             Plugin plugin = Bukkit.getPluginManager().getPlugin("SimpleAuth");
             assert plugin != null;
             plugin.saveResource("messages.yml", false);
         }
-        return MESSAGES_YAML.exists();
+        if (!MESSAGES_YAML.exists()) {
+            logger.info("[SimpleAuth] Messages YAML config cannot be created. Maybe something wrong with" +
+                    "folder permissions?");
+            return false;
+        }
+        return true;
     }
 }

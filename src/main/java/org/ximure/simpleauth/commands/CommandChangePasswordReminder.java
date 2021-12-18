@@ -5,8 +5,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.ximure.simpleauth.Utils;
 import org.ximure.simpleauth.auth.AuthManager;
-import org.ximure.simpleauth.misc.Utils;
 
 import java.util.UUID;
 
@@ -25,9 +25,9 @@ public class CommandChangePasswordReminder implements CommandExecutor {
         Player player = (Player) sender;
         UUID playerUUID = player.getUniqueId();
         // if no reminder was provided we'll warn a player
-        boolean reminderNotProvided = args.length == 0;
-        if (reminderNotProvided) {
-            String noReminder = utils.getStringFromYml("no_reminder");
+        boolean reminderProvided = args.length > 0;
+        if (!reminderProvided) {
+            String noReminder = utils.getString("no_reminder");
             player.sendMessage(noReminder);
             return true;
         }
@@ -41,11 +41,11 @@ public class CommandChangePasswordReminder implements CommandExecutor {
         String allArgs = utils.getAllArgsString(args, false);
         // writing string with all args to the database only if it was successfull
         if (!authManager.changePasswordReminder(playerUUID, allArgs)) {
-            String notSuccessfullReminderChange = utils.getStringFromYml("not_successfull_cpr");
+            String notSuccessfullReminderChange = utils.getString("not_successfull_cpr");
             player.sendMessage(notSuccessfullReminderChange);
             return true;
         }
-        String successfullReminderChange = utils.getStringFromYml("successfull_password_reminder_change");
+        String successfullReminderChange = utils.getString("successfull_password_reminder_change");
         player.sendMessage(successfullReminderChange);
         return true;
     }

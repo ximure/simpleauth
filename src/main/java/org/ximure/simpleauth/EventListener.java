@@ -1,13 +1,13 @@
 package org.ximure.simpleauth;
 
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.ximure.simpleauth.auth.AuthManager;
-import org.ximure.simpleauth.misc.Utils;
 
 import java.util.UUID;
 
@@ -25,12 +25,19 @@ public class EventListener implements Listener {
         Player player = e.getPlayer();
         UUID playerUUID = player.getUniqueId();
         GameMode currentGameMode = player.getGameMode();
-        String message = utils.getStringFromYml(authManager.isRegistered(playerUUID) ? "login_message" : "register_message");
+        Location loginPlayerLocation = player.getLocation();
+        authManager.setPlayerLoginLocation(playerUUID, loginPlayerLocation);
+        String loginMessage = utils.getString("login_message");
+        String registerMessage = utils.getString("register_message");
         // saving current player's gamemode before switching it to spectator to restore it later
-        authManager.setGamemodeBeforeLogin(playerUUID, currentGameMode);
+        authManager.saveGameMode(playerUUID, currentGameMode);
         // enabling spectator gamemode to use less event listeners
         player.setGameMode(GameMode.SPECTATOR);
-        player.sendMessage(message);
+        if (authManager.isRegistered(playerUUID)) {
+            player.sendMessage(loginMessage);
+        } else {
+            player.sendMessage(registerMessage);
+        }
     }
 
     @EventHandler
@@ -39,10 +46,11 @@ public class EventListener implements Listener {
         UUID playerUUID = player.getUniqueId();
         // restoring saved player gamemode in case he didn't log in or register
         if (!authManager.isOnline(playerUUID)) {
-            GameMode playerGameMode = authManager.getGamemodeBeforeLogin(playerUUID);
+            GameMode playerGameMode = authManager.restoreGameMode(playerUUID);
             player.setGameMode(playerGameMode);
         }
         authManager.setOffline(playerUUID);
+        authManager.removePlayerLocation(playerUUID);
     }
 
     // While player didn't register or login, he'll be unable to move
@@ -65,7 +73,7 @@ public class EventListener implements Listener {
         Player player = event.getPlayer();
         String message = event.getMessage();
         UUID playerUUID = player.getUniqueId();
-        String notRegisteredOrLoggedIn = utils.getStringFromYml("no_command");
+        String notRegisteredOrLoggedIn = utils.getString("no_command");
         if (!authManager.isOnline(playerUUID)) {
             boolean allowedCommands = message.contains("/login") || message.contains("/register") ||
                     message.contains("/remindpassword");
@@ -79,7 +87,7 @@ public class EventListener implements Listener {
     }
 
     // Blocking player from...
-    // Using RMB on something (opening chests, shear sheep etc.)
+    // Using RMB on something (opening chests, shear sheep, etc)
     @EventHandler
     public void onPlayerInteraction(PlayerInteractEvent event) {
         UUID playerUUID = event.getPlayer().getUniqueId();

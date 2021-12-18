@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.ximure.simpleauth.auth.AuthManager;
 import org.ximure.simpleauth.commands.*;
-import org.ximure.simpleauth.misc.Utils;
 
 import java.io.File;
 import java.util.Objects;
@@ -19,7 +18,7 @@ public final class SimpleAuth extends JavaPlugin {
     public final String ANSI_RESET = "\u001B[0m";
     private final AuthManager authManager = new AuthManager();
     private final Logger logger = Bukkit.getLogger();
-    private final Utils utils = new Utils();
+    private final Utils utils = new Utils(logger);
 
     @Override
     public void onEnable() {
@@ -45,7 +44,7 @@ public final class SimpleAuth extends JavaPlugin {
         }
         // if messages template config does not exist - this block will create it
         if (!MESSAGES_YAML.exists()) {
-            if (!utils.createYmlTemplate()) {
+            if (!utils.createTemplate()) {
                 logger.info(ANSI_RED + "[SimpleAuth] Messages config template cannot be created" + ANSI_RESET);
                 Bukkit.getPluginManager().disablePlugin(this);
             }
@@ -67,6 +66,7 @@ public final class SimpleAuth extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // TODO: write plugin disable logic
+        authManager.clearGameModes();
+        authManager.clearOnlineStatuses();
     }
 }

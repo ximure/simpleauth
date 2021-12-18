@@ -12,7 +12,7 @@
 #§8 - dark_gray
 #§9 - blue
 #§a - green
-#§b - aqua
+#§b - squa
 #§c - red
 #§d - light purple
 #§e - yellow
@@ -26,9 +26,9 @@ register_message: "§2Register with /register <password> <password reminder>. In
 
 
 # /REGISTER MESSAGES
-# If player did not type password and password reminder
+# If player did not typed password and password reminder 
 no_password_and_reminder: "§cYou did not provided a password and a password reminder"
-# If player did not type password reminder
+# If player did not typed password reminder
 no_reminder: "§cYou did not provided a password reminder"
 # Player trying to /register while not logged in but registered
 already_registered: "§cYou're already registered"
@@ -43,7 +43,7 @@ not_successfull_registration: "§cSomething went wrong while trying to register 
 already_logged_in: "§cYou're already logged in"
 # Player trying to /login while not registered
 not_registered: "§cYou're not registered"
-# Player did not provide a password while trying to use /login
+# Player did not provided a password while trying to use /login
 password_not_provided: "§cYou did not provided a password"
 # Player provided wrong password while trying to use /login
 wrong_password: "§cYou've entered wrong password"
@@ -54,14 +54,14 @@ successfull_login: "§2You've logged in"
 # /CHANGEPASSWORD MESSAGES
 # If changing password in the database was not successfull
 not_successfull_cpw: "§cSomething went wrong while trying to change password. Contact this server administrator"
-# Player trying to change his password but did not type an old and a new password
+# Player trying to change his password but did not typed an old and a new password
 no_passwords: "§cYou did not typed an old and a new password"
-# If player did not type a new password in /changepassword command
+# If player did not typed a new password in /changepassword command
 no_new_password: "§cYou did not provided a new password"
 # If player typed wrong old password in /changepassword command
 wrong_old_password: "§cYou've provided wrong old password"
 # Player successfully changed his password
-successfull_password_change: "§2You've successfully changed your password"
+successfull_password_change: "§2You've successfuly changed your password"
 
 
 # /CHANGEREMINDER MESSAGES
@@ -72,10 +72,12 @@ successfull_password_reminder_change: "§2You've successfully changed your passw
 
 
 # /REMINDPASSWORD MESSAGES
-# When player types /remindpassword command to receive his password reminder
+# When player types /remindpassword command to recieve his password reminder
 reminder_message: "§2Your password reminder: "
 # Player trying to get reminder while not registered
-no_reminder_yet: "§cYou did not registered, therefore cannot get your password reminder"
+no_reminder_yet: "§cYou did not registered, therebefore cannot get your password reminder"
+
+
 
 
 # ANY ERROR MESSAGES
