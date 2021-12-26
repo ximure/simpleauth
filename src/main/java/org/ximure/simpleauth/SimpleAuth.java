@@ -16,9 +16,9 @@ public final class SimpleAuth extends JavaPlugin {
     public final String ANSI_GREEN = "\u001B[32m";
     public final String ANSI_RED = "\u001B[31m";
     public final String ANSI_RESET = "\u001B[0m";
-    private final AuthManager authManager = new AuthManager();
     private final Logger logger = Bukkit.getLogger();
     private final Utils utils = new Utils(logger);
+    private final AuthManager authManager = new AuthManager(utils);
 
     @Override
     public void onEnable() {

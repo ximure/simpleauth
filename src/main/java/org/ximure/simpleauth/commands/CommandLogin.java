@@ -1,6 +1,5 @@
 package org.ximure.simpleauth.commands;
 
-import org.bukkit.GameMode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -51,23 +50,9 @@ public class CommandLogin implements CommandExecutor {
             player.sendMessage(passwordNotProvided);
             return true;
         }
+        // sending request to log in
         String password = args[0];
-        boolean validPassword = authManager.verifyPassword(playerUUID, password);
-        // if password is valid - we'll let player on a server
-        if (validPassword) {
-            GameMode previousGameMode = authManager.restoreGameMode(playerUUID);
-            String successfullLogin = utils.getString("successfull_login");
-            // setting playerStatus to online. Player won't be able to use /register or /login command after that
-            authManager.setOnline(playerUUID);
-            // restoring previous gamemode which has been written in onplayerjoin event
-            player.setGameMode(previousGameMode);
-            player.teleport(authManager.restorePlayerLocation(playerUUID));
-            player.sendMessage(successfullLogin);
-        } else {
-            // if password is not valid - we won't let player on a server
-            String wrongPassword = utils.getString("wrong_password");
-            player.sendMessage(wrongPassword);
-        }
+        authManager.loginPlayer(player, playerUUID, password);
         return true;
     }
 }

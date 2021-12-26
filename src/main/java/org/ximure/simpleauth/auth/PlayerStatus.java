@@ -9,6 +9,19 @@ public class PlayerStatus {
     final Map<UUID, Location> playerLoginLocation = new HashMap<>();
     final Map<UUID, GameMode> gameModeStatus = new HashMap<>();
     final List<UUID> loginStatus = new ArrayList<>();
+    final Map<UUID, Boolean> deathStatus = new HashMap<>();
+
+    public void removeDeadOnLogin(UUID playerUUID) {
+        deathStatus.remove(playerUUID);
+    }
+
+    public void putDeadOnLogin(UUID playerUUID) {
+        deathStatus.put(playerUUID, true);
+    }
+
+    public boolean isDeadOnLogin(UUID playerUUID) {
+        return deathStatus.containsKey(playerUUID);
+    }
 
     /**
      * Adds player login location,so we'll teleport him back later (fix for very laggy players)

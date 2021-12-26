@@ -24,6 +24,12 @@ public class EventListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
         UUID playerUUID = player.getUniqueId();
+        // if player is dead on login we'll put him inside of map with dead on login player
+        // to check if he was dead in login/register commands to not teleport him to the location
+        // of dead :>
+        if (player.isDead()) {
+            authManager.putDeadOnLogin(playerUUID);
+        }
         GameMode currentGameMode = player.getGameMode();
         Location loginPlayerLocation = player.getLocation();
         authManager.setPlayerLoginLocation(playerUUID, loginPlayerLocation);
@@ -44,6 +50,8 @@ public class EventListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent e) {
         Player player = e.getPlayer();
         UUID playerUUID = player.getUniqueId();
+        // removing player from dead on login map
+        authManager.removeDeadOnLogin(playerUUID);
         // restoring saved player gamemode in case he didn't log in or register
         if (!authManager.isOnline(playerUUID)) {
             GameMode playerGameMode = authManager.restoreGameMode(playerUUID);

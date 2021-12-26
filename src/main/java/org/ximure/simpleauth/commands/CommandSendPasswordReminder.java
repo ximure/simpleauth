@@ -11,11 +11,11 @@ import org.ximure.simpleauth.auth.AuthManager;
 import java.util.UUID;
 
 public class CommandSendPasswordReminder implements CommandExecutor {
-    private final AuthManager AuthManager;
+    private final AuthManager authManager;
     private final Utils utils;
 
-    public CommandSendPasswordReminder(AuthManager AuthManager, Utils utils) {
-        this.AuthManager = AuthManager;
+    public CommandSendPasswordReminder(AuthManager authManager, Utils utils) {
+        this.authManager = authManager;
         this.utils = utils;
     }
 
@@ -24,7 +24,7 @@ public class CommandSendPasswordReminder implements CommandExecutor {
                              String[] args) {
         Player player = (Player) sender;
         UUID playerUUID = player.getUniqueId();
-        String passwordReminder = AuthManager.getPasswordReminder(playerUUID);
+        String passwordReminder = authManager.getPasswordReminder(playerUUID);
         // if player associated uuid does not contain reminder yet
         if (passwordReminder == null) {
             String noReminder = utils.getString("no_reminder_yet");

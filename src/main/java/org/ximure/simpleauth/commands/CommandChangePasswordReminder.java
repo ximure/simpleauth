@@ -14,8 +14,8 @@ public class CommandChangePasswordReminder implements CommandExecutor {
     private final AuthManager authManager;
     private final Utils utils;
 
-    public CommandChangePasswordReminder(AuthManager AuthManager, Utils utils) {
-        this.authManager = AuthManager;
+    public CommandChangePasswordReminder(AuthManager authManager, Utils utils) {
+        this.authManager = authManager;
         this.utils = utils;
     }
 
