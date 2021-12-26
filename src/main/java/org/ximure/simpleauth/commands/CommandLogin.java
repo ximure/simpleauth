@@ -7,19 +7,16 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.ximure.simpleauth.Utils;
 import org.ximure.simpleauth.auth.AuthManager;
-import org.ximure.simpleauth.auth.PlayerStatsManager;
 
 import java.util.UUID;
 
 public class CommandLogin implements CommandExecutor {
     private final AuthManager authManager;
     private final Utils utils;
-    private final PlayerStatsManager playerStatsManager;
 
-    public CommandLogin(AuthManager authManager, Utils utils, PlayerStatsManager playerStatsManager) {
+    public CommandLogin(AuthManager authManager, Utils utils) {
         this.authManager = authManager;
         this.utils = utils;
-        this.playerStatsManager = playerStatsManager;
     }
 
     @Override
@@ -29,7 +26,7 @@ public class CommandLogin implements CommandExecutor {
         UUID playerUUID = player.getUniqueId();
 
         // these 4 are self-explanatory
-        boolean loggedIn = playerStatsManager.isOnline(playerUUID);
+        boolean loggedIn = authManager.isOnline(playerUUID);
         if (loggedIn) {
             String alreadyLoggedIn = utils.getString("already_logged_in");
             player.sendMessage(alreadyLoggedIn);
@@ -57,7 +54,7 @@ public class CommandLogin implements CommandExecutor {
         String password = args[0];
         authManager.loginPlayer(player, playerUUID, password);
         // removing his stats before login
-        playerStatsManager.removePlayerStats(playerUUID);
+        authManager.removePlayerStats(playerUUID);
         return true;
     }
 }

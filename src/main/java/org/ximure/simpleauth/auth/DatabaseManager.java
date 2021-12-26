@@ -5,7 +5,8 @@ import java.util.UUID;
 
 import static org.ximure.simpleauth.SimpleAuth.PASSWORDS_DATABASE;
 
-public class DatabaseManager {
+@SuppressWarnings("Duplicates")
+public class DatabaseManager extends PlayerStatsManager {
     private static Connection connection;
 
     /**
@@ -16,7 +17,7 @@ public class DatabaseManager {
         final String formattedUUID = playerUUID.toString().replace("-", "");
         final String query = "INSERT INTO passwords(uuid, password, password_reminder) VALUES(?, ?, ?)";
         try {
-            Connection connection = this.connectToDatabase();
+            Connection connection = this.getDatabaseConnection();
             assert connection != null;
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, formattedUUID);
@@ -40,7 +41,7 @@ public class DatabaseManager {
         String formattedUUID = playerUUID.toString().replace("-", "");
         try {
             String query = "UPDATE passwords SET password = ? WHERE uuid = ?";
-            Connection connection = this.connectToDatabase();
+            Connection connection = this.getDatabaseConnection();
             assert connection != null;
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, newPassword);
@@ -63,7 +64,7 @@ public class DatabaseManager {
         String formattedUUID = playerUUID.toString().replace("-", "");
         try {
             String query = "UPDATE passwords SET password_reminder = ? WHERE uuid = ?";
-            Connection connection = this.connectToDatabase();
+            Connection connection = this.getDatabaseConnection();
             assert connection != null;
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, newPasswordReminder);
@@ -85,7 +86,7 @@ public class DatabaseManager {
         final String formattedUUID = playerUUID.toString().replace("-", "");
         final String query = "SELECT uuid FROM passwords WHERE uuid LIKE '" + formattedUUID + "'";
         try {
-            Connection connection = this.connectToDatabase();
+            Connection connection = this.getDatabaseConnection();
             assert connection != null;
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
@@ -104,7 +105,7 @@ public class DatabaseManager {
         final String formattedUUID = playerUUID.toString().replace("-", "");
         final String query = "SELECT password_reminder FROM passwords WHERE uuid LIKE '" + formattedUUID + "'";
         try {
-            Connection connection = this.connectToDatabase();
+            Connection connection = this.getDatabaseConnection();
             assert connection != null;
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
@@ -125,7 +126,7 @@ public class DatabaseManager {
         final String formattedUUID = playerUUID.toString().replace("-", "");
         final String query = "SELECT password FROM passwords WHERE uuid LIKE '" + formattedUUID + "'";
         try {
-            Connection connection = this.connectToDatabase();
+            Connection connection = this.getDatabaseConnection();
             assert connection != null;
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
@@ -140,7 +141,7 @@ public class DatabaseManager {
      * This method allows connecting to database
      * @return  Connection object
      */
-    private Connection connectToDatabase() {
+    private Connection getDatabaseConnection() {
         try {
             String url = "jdbc:sqlite:" + PASSWORDS_DATABASE;
             if (connection != null) {

@@ -24,7 +24,6 @@ public class CommandChangePassword implements CommandExecutor {
                              @NotNull String[] args) {
         Player player = (Player) sender;
         UUID playerUUID = player.getUniqueId();
-
         // these 3 blocks are self-explanatory
         boolean nothingProvided = args.length == 0;
         if (nothingProvided) {

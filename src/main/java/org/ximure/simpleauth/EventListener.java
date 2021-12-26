@@ -9,7 +9,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.util.Vector;
 import org.ximure.simpleauth.auth.AuthManager;
-import org.ximure.simpleauth.auth.PlayerStatsManager;
 import org.ximure.simpleauth.models.PlayerStats;
 
 import java.util.UUID;
@@ -17,12 +16,10 @@ import java.util.UUID;
 public class EventListener implements Listener {
     private final AuthManager authManager;
     private final Utils utils;
-    private final PlayerStatsManager playerStatsManager;
 
-    public EventListener(AuthManager authManager, Utils utils, PlayerStatsManager playerStatsManager) {
+    public EventListener(AuthManager authManager, Utils utils) {
         this.authManager = authManager;
         this.utils = utils;
-        this.playerStatsManager = playerStatsManager;
     }
 
     @EventHandler
@@ -36,7 +33,7 @@ public class EventListener implements Listener {
         Location loginLocation = player.getLocation();
         PlayerStats playerStats = new PlayerStats(velocity, loginGamemode, deathStatus, loginLocation);
         // adding this player stats to restore it later
-        playerStatsManager.addPlayerStats(playerUUID, playerStats);
+        authManager.addPlayerStats(playerUUID, playerStats);
         // getting login/register messages
         String loginMessage = utils.getString("login_message");
         String registerMessage = utils.getString("register_message");
@@ -54,26 +51,26 @@ public class EventListener implements Listener {
         Player player = e.getPlayer();
         UUID playerUUID = player.getUniqueId();
         // restoring saved player gamemode in case he didn't log in or register
-        if (!playerStatsManager.isOnline(playerUUID)) {
-            player.setGameMode(playerStatsManager.getPlayerStats(playerUUID).getLoginGamemode());
+        if (!authManager.isOnline(playerUUID)) {
+            player.setGameMode(authManager.getPlayerStats(playerUUID).getLoginGamemode());
         }
         // setting him as offline and removing all his login stats
-        playerStatsManager.setOffline(playerUUID);
-        playerStatsManager.removePlayerStats(playerUUID);
+        authManager.setOffline(playerUUID);
+        authManager.removePlayerStats(playerUUID);
     }
 
     // While player didn't register or login, he'll be unable to move
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         UUID playerUUID = event.getPlayer().getUniqueId();
-        event.setCancelled(!playerStatsManager.isOnline(playerUUID));
+        event.setCancelled(!authManager.isOnline(playerUUID));
     }
 
     // While player didn't register or login, he'll be unable to send message to chat
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         UUID playerUUID = event.getPlayer().getUniqueId();
-        event.setCancelled(!playerStatsManager.isOnline(playerUUID));
+        event.setCancelled(!authManager.isOnline(playerUUID));
     }
 
     // While player didn't register or login, he'll be unable to send any commands, except /register and /login
@@ -83,7 +80,7 @@ public class EventListener implements Listener {
         String message = event.getMessage();
         UUID playerUUID = player.getUniqueId();
         String notRegisteredOrLoggedIn = utils.getString("no_command");
-        if (!playerStatsManager.isOnline(playerUUID)) {
+        if (!authManager.isOnline(playerUUID)) {
             boolean allowedCommands = message.contains("/login") || message.contains("/register") ||
                     message.contains("/remindpassword");
             if (allowedCommands) {
@@ -100,28 +97,28 @@ public class EventListener implements Listener {
     @EventHandler
     public void onPlayerInteraction(PlayerInteractEvent event) {
         UUID playerUUID = event.getPlayer().getUniqueId();
-        event.setCancelled(!playerStatsManager.isOnline(playerUUID));
+        event.setCancelled(!authManager.isOnline(playerUUID));
     }
 
     // Dropping items
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         UUID playerUUID = event.getPlayer().getUniqueId();
-        event.setCancelled(!playerStatsManager.isOnline(playerUUID));
+        event.setCancelled(!authManager.isOnline(playerUUID));
     }
 
     // Doing something with items in inventory at all
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         UUID playerUUID = event.getWhoClicked().getUniqueId();
-        event.setCancelled(!playerStatsManager.isOnline(playerUUID));
+        event.setCancelled(!authManager.isOnline(playerUUID));
     }
 
     // Teleporting to players in spectator mode while he's not registered or logged in
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event) {
         UUID playerUUID = event.getPlayer().getUniqueId();
-        if (event.getCause().equals(PlayerTeleportEvent.TeleportCause.SPECTATE) && !playerStatsManager.isOnline(playerUUID)) {
+        if (event.getCause().equals(PlayerTeleportEvent.TeleportCause.SPECTATE) && !authManager.isOnline(playerUUID)) {
             event.setCancelled(true);
         }
     }
