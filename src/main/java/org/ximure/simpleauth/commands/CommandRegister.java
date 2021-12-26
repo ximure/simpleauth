@@ -7,16 +7,19 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.ximure.simpleauth.Utils;
 import org.ximure.simpleauth.auth.AuthManager;
+import org.ximure.simpleauth.auth.PlayerStatsManager;
 
 import java.util.UUID;
 
 public class CommandRegister implements CommandExecutor {
     private final AuthManager authManager;
     private final Utils utils;
+    private final PlayerStatsManager playerStatsManager;
 
-    public CommandRegister(AuthManager authManager, Utils utils) {
+    public CommandRegister(AuthManager authManager, Utils utils, PlayerStatsManager playerStatsManager) {
         this.authManager = authManager;
         this.utils = utils;
+        this.playerStatsManager = playerStatsManager;
     }
 
     @Override
@@ -49,6 +52,8 @@ public class CommandRegister implements CommandExecutor {
         // else, we'll try to register him
         String password = args[0];
         authManager.registerPlayer(player, playerUUID, password, args);
+        // removing his player stats
+        playerStatsManager.removePlayerStats(playerUUID);
         return true;
     }
 }

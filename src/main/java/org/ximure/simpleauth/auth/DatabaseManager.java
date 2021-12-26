@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import static org.ximure.simpleauth.SimpleAuth.PASSWORDS_DATABASE;
 
-public class DatabaseManager extends PlayerStatus {
+public class DatabaseManager {
     private static Connection connection;
 
     /**

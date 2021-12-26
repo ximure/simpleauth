@@ -3,6 +3,7 @@ package org.ximure.simpleauth;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.ximure.simpleauth.auth.AuthManager;
+import org.ximure.simpleauth.auth.PlayerStatsManager;
 import org.ximure.simpleauth.commands.*;
 
 import java.io.File;
@@ -18,7 +19,8 @@ public final class SimpleAuth extends JavaPlugin {
     public final String ANSI_RESET = "\u001B[0m";
     private final Logger logger = Bukkit.getLogger();
     private final Utils utils = new Utils(logger);
-    private final AuthManager authManager = new AuthManager(utils);
+    private final PlayerStatsManager playerStatsManager = new PlayerStatsManager();
+    private final AuthManager authManager = new AuthManager(utils, playerStatsManager);
 
     @Override
     public void onEnable() {
@@ -50,11 +52,11 @@ public final class SimpleAuth extends JavaPlugin {
             }
         }
         // registering event handler and commands
-        getServer().getPluginManager().registerEvents(new EventListener(authManager, utils), this);
+        getServer().getPluginManager().registerEvents(new EventListener(authManager, utils, playerStatsManager), this);
         Objects.requireNonNull(this.getCommand("login"))
-                .setExecutor(new CommandLogin(authManager, utils));
+                .setExecutor(new CommandLogin(authManager, utils, playerStatsManager));
         Objects.requireNonNull(this.getCommand("register"))
-                .setExecutor(new CommandRegister(authManager, utils));
+                .setExecutor(new CommandRegister(authManager, utils, playerStatsManager));
         Objects.requireNonNull(this.getCommand("remindpassword"))
                 .setExecutor(new CommandSendPasswordReminder(authManager, utils));
         Objects.requireNonNull(this.getCommand("cpw"))
@@ -66,7 +68,7 @@ public final class SimpleAuth extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        authManager.clearGameModes();
-        authManager.clearOnlineStatuses();
+        playerStatsManager.removeAllPlayerStats();
+        playerStatsManager.removeAllPlayerLogins();
     }
 }

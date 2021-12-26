@@ -9,26 +9,30 @@ import java.util.UUID;
 public class AuthManager extends DatabaseManager {
     private final AuthManager authManager = this;
     private final Utils utils;
+    private final PlayerStatsManager playerStatsManager;
 
-    public AuthManager(Utils utils) {
+    public AuthManager(Utils utils, PlayerStatsManager playerStatsManager) {
         this.utils = utils;
+        this.playerStatsManager = playerStatsManager;
     }
 
     public void loginPlayer(Player player, UUID playerUUID, String password) {
         boolean validPassword = authManager.verifyPassword(playerUUID, password);
         // if password is valid - we'll let player on a server
         if (validPassword) {
-            GameMode previousGameMode = authManager.restoreGameMode(playerUUID);
+            GameMode previousGameMode = playerStatsManager.getPlayerStats(playerUUID).getLoginGamemode();
             String successfullLogin = utils.getString("successfull_login");
-            // setting playerStatus to online. Player won't be able to use /register or /login command after that
-            authManager.setOnline(playerUUID);
+            // setting playerStatus to online. Player won't be able to use /register or /login commands
+            playerStatsManager.setOnline(playerUUID);
             // restoring previous gamemode which has been written in onplayerjoin event
             player.setGameMode(previousGameMode);
             // additional check to not teleport player to the location of death if he tried to relog
-            if (!authManager.isDeadOnLogin(playerUUID)) {
-                player.teleport(authManager.restorePlayerLocation(playerUUID));
+            if (!playerStatsManager.getPlayerStats(playerUUID).isDead()) {
+                player.teleport(playerStatsManager.getPlayerStats(playerUUID).getLoginLocation());
             }
             player.sendMessage(successfullLogin);
+            // restoring player fall velocity (because he can abuse that)
+            player.setVelocity(playerStatsManager.getPlayerStats(playerUUID).getLoginVelocity());
         } else {
             // if password is not valid - we won't let player on a server
             String wrongPassword = utils.getString("wrong_password");
@@ -45,16 +49,17 @@ public class AuthManager extends DatabaseManager {
             player.sendMessage(notSuccessfullRegistration);
         }
         String successfullRegistration = utils.getString("successfull_registration");
-        GameMode previousGameMode = authManager.restoreGameMode(playerUUID);
+        GameMode previousGameMode = playerStatsManager.getPlayerStats(playerUUID).getLoginGamemode();
         // setting player status to online so the registration command don't add this user in the database again
-        authManager.setOnline(playerUUID);
+        playerStatsManager.setOnline(playerUUID);
         // restoring previous gamemode which has been written in onplayerjoin event
         player.setGameMode(previousGameMode);
-        player.teleport(authManager.restorePlayerLocation(playerUUID));
         player.sendMessage(successfullRegistration);
         // additional check to not teleport player to the location of death if he tried to relog
-        if (!authManager.isDeadOnLogin(playerUUID)) {
-            player.teleport(authManager.restorePlayerLocation(playerUUID));
+        if (!playerStatsManager.getPlayerStats(playerUUID).isDead()) {
+            player.teleport(playerStatsManager.getPlayerStats(playerUUID).getLoginLocation());
         }
+        // setting player velocity so player cannot abuse this in any way (just in case)
+        player.setVelocity(playerStatsManager.getPlayerStats(playerUUID).getLoginVelocity());
     }
 }
