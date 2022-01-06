@@ -52,7 +52,13 @@ public class EventListener implements Listener {
         UUID playerUUID = player.getUniqueId();
         // restoring saved player gamemode in case he didn't log in or register
         if (!authManager.isOnline(playerUUID)) {
-            player.setGameMode(authManager.getPlayerStats(playerUUID).getLoginGamemode());
+            GameMode loginGamemode = authManager.getPlayerStats(playerUUID).getLoginGamemode();
+            // sometimes bukkit cannot save gamemode fast enough :(
+            if (loginGamemode == null) {
+                player.setGameMode(GameMode.SURVIVAL);
+            } else {
+                player.setGameMode(authManager.getPlayerStats(playerUUID).getLoginGamemode());
+            }
         }
         // setting him as offline and removing all his login stats
         authManager.setOffline(playerUUID);
