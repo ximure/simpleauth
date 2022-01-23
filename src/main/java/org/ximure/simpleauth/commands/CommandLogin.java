@@ -42,13 +42,13 @@ public class CommandLogin implements CommandExecutor {
         if (tooManyStrings) {
             String tooManyArgs = utils.getString("too_many_args");
             player.sendMessage(tooManyArgs);
-            return true;
+            return false;
         }
         boolean passwordProvided = args.length == 1;
         if (!passwordProvided) {
             String passwordNotProvided = utils.getString("password_not_provided");
             player.sendMessage(passwordNotProvided);
-            return true;
+            return false;
         }
         // sending request to log in
         String password = args[0];

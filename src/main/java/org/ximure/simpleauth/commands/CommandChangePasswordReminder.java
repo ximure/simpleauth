@@ -29,24 +29,24 @@ public class CommandChangePasswordReminder implements CommandExecutor {
         if (!reminderProvided) {
             String noReminder = utils.getString("no_reminder");
             player.sendMessage(noReminder);
-            return true;
+            return false;
         }
         // if total length not higher than 230, we'll write it to the database
         int argsLength = utils.getArgsLength(args);
         if (argsLength >= 230) {
             player.sendMessage("too_many_args");
-            return true;
+            return false;
         }
         // creating string with all args
         String allArgs = utils.getAllArgsString(args, false);
-        // writing string with all args to the database only if it was successfull
+        // writing string with all args to the database only if it was successful
         if (!authManager.changePasswordReminder(playerUUID, allArgs)) {
-            String notSuccessfullReminderChange = utils.getString("not_successfull_cpr");
-            player.sendMessage(notSuccessfullReminderChange);
+            String notSuccessfulReminderChange = utils.getString("not_successful_cpr");
+            player.sendMessage(notSuccessfulReminderChange);
             return true;
         }
-        String successfullReminderChange = utils.getString("successfull_password_reminder_change");
-        player.sendMessage(successfullReminderChange);
+        String successfulReminderChange = utils.getString("successful_password_reminder_change");
+        player.sendMessage(successfulReminderChange);
         return true;
     }
 }

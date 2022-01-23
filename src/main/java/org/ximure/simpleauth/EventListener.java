@@ -25,13 +25,13 @@ public class EventListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
-        // writing all needed player status
         UUID playerUUID = player.getUniqueId();
-        Vector velocity = player.getVelocity();
-        GameMode loginGamemode = player.getGameMode();
-        Boolean deathStatus = player.isDead();
-        Location loginLocation = player.getLocation();
-        PlayerStats playerStats = new PlayerStats(velocity, loginGamemode, deathStatus, loginLocation);
+        // writing all needed player status
+        Vector playerVelocity = player.getVelocity();
+        GameMode playerGamemode = player.getGameMode();
+        Boolean isDead = player.isDead();
+        Location playerLocation = player.getLocation();
+        PlayerStats playerStats = new PlayerStats(playerVelocity, playerGamemode, isDead, playerLocation);
         // adding this player stats to restore it later
         authManager.addPlayerStats(playerUUID, playerStats);
         // getting login/register messages
@@ -52,13 +52,7 @@ public class EventListener implements Listener {
         UUID playerUUID = player.getUniqueId();
         // restoring saved player gamemode in case he didn't log in or register
         if (!authManager.isOnline(playerUUID)) {
-            GameMode loginGamemode = authManager.getPlayerStats(playerUUID).getLoginGamemode();
-            // sometimes bukkit cannot save gamemode fast enough :(
-            if (loginGamemode == null) {
-                player.setGameMode(GameMode.SURVIVAL);
-            } else {
-                player.setGameMode(authManager.getPlayerStats(playerUUID).getLoginGamemode());
-            }
+            player.setGameMode(authManager.getPlayerStats(playerUUID).getLoginGamemode());
         }
         // setting him as offline and removing all his login stats
         authManager.setOffline(playerUUID);

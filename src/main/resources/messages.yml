@@ -33,9 +33,9 @@ no_reminder: "§cYou did not provided a password reminder"
 # Player trying to /register while not logged in but registered
 already_registered: "§cYou're already registered"
 # If player successfully logged in or registered he'll get on of this messages
-successfull_registration: "§2You've successfully registered"
+successful_registration: "§2You've successfully registered"
 # If inserting password and reminder to the database goes wrong
-not_successfull_registration: "§cSomething went wrong while trying to register you. Contact this server administrator"
+not_successful_registration: "§cSomething went wrong while trying to register you. Contact this server administrator"
 
 
 # /LOGIN MESSAGES
@@ -48,12 +48,12 @@ password_not_provided: "§cYou did not provided a password"
 # Player provided wrong password while trying to use /login
 wrong_password: "§cYou've entered wrong password"
 # Player successfully logged in on a server
-successfull_login: "§2You've logged in"
+successful_login: "§2You've logged in"
 
 
 # /CHANGEPASSWORD MESSAGES
 # If changing password in the database was not successfull
-not_successfull_cpw: "§cSomething went wrong while trying to change password. Contact this server administrator"
+not_successful_cpw: "§cSomething went wrong while trying to change password. Contact this server administrator"
 # Player trying to change his password but did not typed an old and a new password
 no_passwords: "§cYou did not typed an old and a new password"
 # If player did not typed a new password in /changepassword command
@@ -61,14 +61,14 @@ no_new_password: "§cYou did not provided a new password"
 # If player typed wrong old password in /changepassword command
 wrong_old_password: "§cYou've provided wrong old password"
 # Player successfully changed his password
-successfull_password_change: "§2You've successfuly changed your password"
+successful_password_change: "§2You've successfuly changed your password"
 
 
 # /CHANGEREMINDER MESSAGES
 # If changing password reminder in the database goes wrong
-not_successfull_cpr: "§cSomething went wrong while trying to change your password reminder. Contact this server administrator"
+not_successful_cpr: "§cSomething went wrong while trying to change your password reminder. Contact this server administrator"
 # If player successfully changed his password reminder
-successfull_password_reminder_change: "§2You've successfully changed your password reminder"
+successful_password_reminder_change: "§2You've successfully changed your password reminder"
 
 
 # /REMINDPASSWORD MESSAGES

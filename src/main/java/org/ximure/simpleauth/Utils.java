@@ -14,9 +14,16 @@ import static org.ximure.simpleauth.SimpleAuth.MESSAGES_YAML;
 
 public class Utils {
     private final Logger logger;
+    private final Yaml yaml;
 
-    public Utils(Logger logger) {
+    public Utils(Logger logger, Yaml yaml) {
         this.logger = logger;
+        this.yaml = yaml;
+    }
+
+    public String getOfflineUUIDFromNickname(String nickname) {
+        // TODO: post request to mojang server to get offline uuid from nickname
+        return "placeholder";
     }
 
     /**
@@ -61,7 +68,6 @@ public class Utils {
      * @return              string which has been accessed. Null if this string does not exist
      */
     public String getString(String stringName) {
-        Yaml yaml = new Yaml();
         try {
             InputStream stringsFile = new FileInputStream(MESSAGES_YAML);
             Map<String, Object> data = yaml.load(stringsFile);

@@ -37,14 +37,14 @@ public class CommandRegister implements CommandExecutor {
         if (nothingProvided) {
             String noPasswordAndReminder = utils.getString("no_password_and_reminder");
             player.sendMessage(noPasswordAndReminder);
-            return true;
+            return false;
         }
         // player forgot to type in password reminder?
         boolean reminderNotProvided = args.length == 1;
         if (reminderNotProvided) {
             String noReminder = utils.getString("no_reminder");
             player.sendMessage(noReminder);
-            return true;
+            return false;
         }
         // else, we'll try to register him
         String password = args[0];

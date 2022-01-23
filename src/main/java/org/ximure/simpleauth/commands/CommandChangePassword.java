@@ -29,19 +29,19 @@ public class CommandChangePassword implements CommandExecutor {
         if (nothingProvided) {
             String nothingProvidedMessage = utils.getString("no_passwords");
             player.sendMessage(nothingProvidedMessage);
-            return true;
+            return false;
         }
         boolean newPasswordNotProvided = args.length == 1;
         if (newPasswordNotProvided) {
             String newPasswordNotProvidedMessage = utils.getString("no_new_password");
             player.sendMessage(newPasswordNotProvidedMessage);
-            return true;
+            return false;
         }
         boolean tooManyArgs = args.length > 2;
         if (tooManyArgs) {
             String tooManyArgsMessage = utils.getString("too_many_args");
             player.sendMessage(tooManyArgsMessage);
-            return true;
+            return false;
         } else {
             String oldPassword = args[0];
             Boolean validPassword = authManager.verifyPassword(playerUUID, oldPassword);
@@ -51,13 +51,13 @@ public class CommandChangePassword implements CommandExecutor {
                 // trying to change player's password in the database. If something goes wrong
                 // this block will be executed
                 if (!authManager.changePassword(playerUUID, newPassword)) {
-                    String notSuccessfullPasswordChange = utils.getString("not_successfull_cpw");
-                    player.sendMessage(notSuccessfullPasswordChange);
+                    String notSuccessfulPasswordChange = utils.getString("not_successful_cpw");
+                    player.sendMessage(notSuccessfulPasswordChange);
                     return true;
                 }
                 // if everything is ok, we'll send player a message that he changed his password
-                String successfullPasswordChange = utils.getString("successfull_password_change");
-                player.sendMessage(successfullPasswordChange);
+                String successfulPasswordChange = utils.getString("successful_password_change");
+                player.sendMessage(successfulPasswordChange);
                 return true;
             }
             // that block we'll be executed when player's entered password not equals to one in the database

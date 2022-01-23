@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.ximure.simpleauth.auth.AuthManager;
 import org.ximure.simpleauth.commands.*;
+import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.util.Objects;
@@ -17,7 +18,8 @@ public final class SimpleAuth extends JavaPlugin {
     public final String ANSI_RED = "\u001B[31m";
     public final String ANSI_RESET = "\u001B[0m";
     private final Logger logger = Bukkit.getLogger();
-    private final Utils utils = new Utils(logger);
+    private final Yaml yaml = new Yaml();
+    private final Utils utils = new Utils(logger, yaml);
     private final AuthManager authManager = new AuthManager(utils);
 
     @Override

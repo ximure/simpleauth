@@ -18,7 +18,7 @@ public class AuthManager extends DatabaseManager {
         // if password is valid - we'll let player on a server
         if (validPassword) {
             GameMode previousGameMode = this.getPlayerStats(playerUUID).getLoginGamemode();
-            String successfullLogin = utils.getString("successfull_login");
+            String successfulLogin = utils.getString("successful_login");
             // setting playerStatus to online. Player won't be able to use /register or /login commands
             this.setOnline(playerUUID);
             // restoring previous gamemode which has been written in onplayerjoin event
@@ -27,7 +27,7 @@ public class AuthManager extends DatabaseManager {
             if (!this.getPlayerStats(playerUUID).isDead()) {
                 player.teleport(this.getPlayerStats(playerUUID).getLoginLocation());
             }
-            player.sendMessage(successfullLogin);
+            player.sendMessage(successfulLogin);
             // restoring player fall velocity (because he can abuse that)
             // TODO: doesn't working
             player.setVelocity(this.getPlayerStats(playerUUID).getLoginVelocity());
@@ -43,16 +43,16 @@ public class AuthManager extends DatabaseManager {
         // adding player's uuid, password and reminder to the database and checking
         // if inserting data to database goes wrong
         if (!this.insertPassword(playerUUID, password, passwordReminder)) {
-            String notSuccessfullRegistration = utils.getString("not_successfull_registration");
-            player.sendMessage(notSuccessfullRegistration);
+            String notSuccessfulRegistration = utils.getString("not_successful_registration");
+            player.sendMessage(notSuccessfulRegistration);
         }
-        String successfullRegistration = utils.getString("successfull_registration");
+        String successfulRegistration = utils.getString("successful_registration");
         GameMode previousGameMode = this.getPlayerStats(playerUUID).getLoginGamemode();
         // setting player status to online so the registration command don't add this user in the database again
         this.setOnline(playerUUID);
         // restoring previous gamemode which has been written in onplayerjoin event
         player.setGameMode(previousGameMode);
-        player.sendMessage(successfullRegistration);
+        player.sendMessage(successfulRegistration);
         // additional check to not teleport player to the location of death if he tried to relog
         if (!this.getPlayerStats(playerUUID).isDead()) {
             player.teleport(this.getPlayerStats(playerUUID).getLoginLocation());
